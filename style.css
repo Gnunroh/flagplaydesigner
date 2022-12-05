@@ -1,0 +1,63 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+.canvascontainer {
+    display: flex;
+}
+
+
+
+.buttoncontainer {
+    padding: 0;
+    margin: 0;
+    width: 400px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 5px;
+    height: 800px;
+
+
+}
+
+button {
+    margin:0;
+    padding:0;
+    font-weight: bold;
+    font-size: large;
+    width: 200px;
+    max-height: 200px;
+}
+
+.buttoncontainer>* {
+    flex: 1 1 200px;
+}
+
+.headlinecontainer {
+    width: 400px;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h2 {
+    justify-self: center;
+    margin: 5px;;
+}
+
+#canvas {
+    border: 2px solid black
+}
+
+.savecontainer {
+    display: flex;
+    justify-content: center;
+}
+
+#simpleDownload {
+    align-self: center;
+    min-height: 150px;
+}

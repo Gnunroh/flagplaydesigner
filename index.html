@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./routes.js" defer></script>
+    <title>Flagcreator</title>
+</head>
+<body>
+    <div class="navbar"></div>
+    <div class="maincontent">
+        <div class="canvascontainer">
+            <div class="leftside">
+                <div class="headlinecontainer"><h2>Basic Routes</h2></div>
+                <div class ="buttoncontainer">
+                    <button id="slant">Slant</button>
+                    <button id="shoot">Shoot</button>
+                    <button id="post">Post</button>
+                    <button id="corner">Corner</button>
+                    <button id="go">Go</button>
+                </div>
+            </div>
+            <div class="canvasdisplay">
+                <canvas id = "canvas"></canvas>
+                <script src="./canvas.js"></script>
+            </div>
+            <div class="rightside"></div>
+        </div>
+        <div class="savecontainer">
+            <button id="simpleDownload">Als Bild speichern</button>
+        </div>
+    </div>
+</body>
+</html>
