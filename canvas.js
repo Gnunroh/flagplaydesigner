@@ -6,13 +6,13 @@ const canvasTop = canvas.offsetTop + canvas.clientTop;
 console.log(canvasLeft)
 console.log(canvasTop)
 
-canvas.width = window.innerWidth;
-canvas.heigth = window.innerHeight;
+canvas.width = window.innerWidth * 0.4;
+canvas.heigth = window.innerWidth * 0.4;
 
 
 //Resizing
-canvas.width = window.innerWidth * 0.6;
-canvas.height = window.innerHeight * 0.7;
+canvas.width = window.innerWidth * 0.4;
+canvas.height = window.innerWidth * 0.4;
 c.lineWidth = 20;
 
 canvas.style.border = '5px solid black';
@@ -50,7 +50,7 @@ circles.push( {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_wid
 circles.push( {x: canvas_width * 0.45, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
 circles.push( {x: canvas_width * 0.45, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
 circles.push( {x: canvas_width * 0.60, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
-circles.push( {x: canvas_width * 0.75, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
+circles.push( {x: canvas_width * 0.83, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
 
 let path1 = new Path2D();
 let path2 = new Path2D();

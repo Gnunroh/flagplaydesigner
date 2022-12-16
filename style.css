@@ -7,9 +7,8 @@
 
 .canvascontainer {
     display: flex;
+
 }
-
-
 
 .buttoncontainer {
     padding: 0;
@@ -49,7 +48,9 @@ h2 {
 }
 
 #canvas {
-    border: 2px solid black
+    border: 2px solid black;
+    object-fit: none;
+    min-width: 0;
 }
 
 .savecontainer {
