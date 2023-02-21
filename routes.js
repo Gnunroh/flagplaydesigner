@@ -1,7 +1,46 @@
 document.querySelector("#simpleDownload").addEventListener("click", function () {
-	let image_data = canvas.toDataURL("image/png");
+	setbackborder();
+    let image_data = canvas.toDataURL("image/png");
 	// Neues Fenster für die Bilddaten
 	window.open(image_data);});
+
+document.querySelector("#clearRoutes").addEventListener("click", function () {
+    clearRoutes();
+});
+
+document.querySelector("#customRouteFinished").addEventListener("click", function () {
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+});
+
+
+
+let setbackborder = function() {
+    for (let circle of circles) {
+        c.fillStyle = circle.color;
+        c.fillRect(circle.x, circle.y, circle.width, circle.height);
+        c.strokeStyle = 'black';
+        c.lineWidth = 4;
+        c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+    };
+};
+
+let clearRoutes = function() {
+    console.log(currentCircleIndex);
+    c.clearRect(0, 0, canvas_width, canvas_height);
+    draw_playingfield();
+    for (let i = 0; i < paths.length; i++) {
+        paths[i] = new Path2D();
+
+    };
+    for (let circle of circles) {
+        c.fillStyle = circle.color;
+        c.fillRect(circle.x, circle.y, circle.width, circle.height);
+        c.strokeStyle = 'black';
+        c.lineWidth = 4;
+        c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+    };
+}
 
 let routestart = function() {
     rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2;
@@ -34,6 +73,7 @@ let drawRoute = function () {
 };
 
 let slant = function () {
+    setbackborder();
     routestart();
     twoyardbreak();
     if (circles[selectedCircle].x < canvas_width/2) {
@@ -157,6 +197,40 @@ let post = function () {
     }
     else {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.15;
+        ryto = circles[selectedCircle].y - canvas_height * 0.4;
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+};
+
+let dig = function () {
+    routestart();
+    sixyardbreak();
+    if (circles[selectedCircle].x < canvas_width/2) {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.15;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.4;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        if (circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3 >= canvas_width) {
+            rxto = canvas_width - canvas_width*0.05;
+        }
+        else {
+            rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.6;   
+        };
+        ryto = circles[selectedCircle].y - canvas_height * 0.4;
+        paths[selectedCircle].lineTo(rxto, ryto);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    else {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.15;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.4;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        if (circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.3 <= canvas_width*0.05) {
+            rxto = canvas_width*0.05;
+        }
+        else {
+            rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.6;   
+        };
         ryto = circles[selectedCircle].y - canvas_height * 0.4;
         paths[selectedCircle].lineTo(rxto, ryto);
     }
@@ -425,6 +499,8 @@ let hitch = function () {
     drawRoute();
 };
 
+
+
 document.querySelector("#slant").addEventListener("click", function () {
     slant();
 });
@@ -489,6 +565,10 @@ document.querySelector("#seam").addEventListener("click", function () {
     seam();
 });
 
+document.querySelector("#dig").addEventListener("click", function () {
+    dig();
+});
+
 
 function drawArrow(fromx, fromy, tox, toy){
     let angle = Math.atan2(toy-fromy,tox-fromx);
@@ -509,3 +589,137 @@ function drawArrow(fromx, fromy, tox, toy){
     paths[selectedCircle].lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
 
 }
+
+
+// FORMATIONS -------------------------------------------------------------------------------------------------------------------------------------------
+
+let spreadleft = function() {
+    circles[0] = {x: canvas_width * 0.13, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.30, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.80, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let spreadright= function() {
+    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.65, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let tightright= function() {
+    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let tightleft= function() {
+    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let bunchopenleft= function() {
+    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let bunchopenright= function() {
+    circles[0] = {x: canvas_width * 0.83, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let allbunchright= function() {
+    circles[0] = {x: canvas_width * 0.625, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let allbunchleft= function() {
+    circles[0] = {x: canvas_width * 0.325, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let tripsleft= function() {
+    circles[0] = {x: canvas_width * 0.1, y: canvas_height * 0.70, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.25, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+let tripsright= function() {
+    circles[0] = {x: canvas_width * 0.875, y: canvas_height * 0.70, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[1] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    circles[4] = {x: canvas_width * 0.7, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
+    clearRoutes();
+};
+
+
+document.querySelector("#spreadleft").addEventListener("click", function () {
+    spreadleft();
+});
+
+document.querySelector("#spreadright").addEventListener("click", function () {
+    spreadright();
+});
+
+document.querySelector("#tightright").addEventListener("click", function () {
+    tightright();
+});
+
+document.querySelector("#tightleft").addEventListener("click", function () {
+    tightleft();
+});
+
+document.querySelector("#bunchopenright").addEventListener("click", function () {
+    bunchopenright();
+});
+
+document.querySelector("#bunchopenleft").addEventListener("click", function () {
+    bunchopenleft();
+});
+
+document.querySelector("#allbunchright").addEventListener("click", function () {
+    allbunchright();
+});
+
+document.querySelector("#allbunchleft").addEventListener("click", function () {
+    allbunchleft();
+});
+
+document.querySelector("#tripsright").addEventListener("click", function () {
+    tripsright();
+});
+
+document.querySelector("#tripsleft").addEventListener("click", function () {
+    tripsleft();
+});
