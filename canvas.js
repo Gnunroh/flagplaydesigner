@@ -9,7 +9,6 @@ console.log(canvasTop)
 canvas.width = window.innerHeight * 0.8;
 canvas.heigth = window.innerHeight * 0.8;
 
-
 //Resizing
 canvas.width = window.innerHeight * 0.8;
 canvas.height = window.innerHeight * 0.8;
@@ -40,6 +39,8 @@ class Circle {
 
 let paths = [];
 let circles = [];
+let routewidth = 15;
+let routestyle = "solid";
 let currentCircleIndex = null;
 let isDragging = false;
 let isSelected = false;
@@ -109,6 +110,7 @@ let mouseDown = function(event) {
             selectedCircle = index;
             c.strokeStyle = 'red';
             c.lineWidth = 4;
+            c.setLineDash([])
             c.strokeRect(circles[selectedCircle].x, circles[selectedCircle].y, circles[selectedCircle].width,circles[selectedCircle].height)
             return;
         } else {
@@ -125,7 +127,7 @@ let mouseDown = function(event) {
         ryto = startY;
         paths[selectedCircle].moveTo(circles[selectedCircle].x + circles[selectedCircle].width/2, circles[selectedCircle].y + 5);
         paths[selectedCircle].lineTo(startX, startY);
-        c.lineWidth = 10;
+        c.lineWidth = routewidth;
         c.strokeStyle = 'black';
         c.stroke(paths[selectedCircle]);
         // drawArrow(rxfrom, ryfrom, rxto, ryto);
@@ -142,7 +144,7 @@ let mouseDown = function(event) {
         paths[selectedCircle].lineTo(startX, startY);
         // drawArrow(rxfrom, ryfrom, rxto, ryto);
         drawRoute();
-        c.lineWidth = 10;
+        c.lineWidth = routewidth;
         c.strokeStyle = 'black';
         c.stroke(paths[selectedCircle]);
     }
@@ -239,7 +241,7 @@ let draw_circles = function() {
     };
     for (let i = 0; i < paths.length; i++) {
         if (paths[i] != paths[currentCircleIndex]) {
-            c.lineWidth = 10;
+            c.lineWidth = routewidth;
             c.strokeStyle = 'black';
             c.stroke(paths[i]);
         };
@@ -271,7 +273,10 @@ function draw(){
 
         // set the path styles (color & linewidth)
         c.strokeStyle = 'black';
-        c.lineWidth= 10;
+        c.lineWidth= routewidth;
+        if (routestyle == "dotted") {
+            c.setLineDash([5, 15])
+        };
 
         // stroke this path
         c.stroke();

@@ -13,7 +13,13 @@ document.querySelector("#customRouteFinished").addEventListener("click", functio
     drawRoute();
 });
 
+let dottedline = function() {
+    routestyle = "dotted"
+};
 
+let solidline = function() {
+    routestyle = "solid"
+};
 
 let setbackborder = function() {
     for (let circle of circles) {
@@ -65,8 +71,11 @@ let twelveyardbreak = function() {
     paths[selectedCircle].lineTo(rxfrom, ryfrom);
 };
 let drawRoute = function () {
-    c.lineWidth = 10;
+    c.lineWidth = routewidth;
     c.strokeStyle = 'black';
+    if (routestyle == "dotted") {
+        c.setLineDash([30, 10])
+    };
     c.stroke(paths[selectedCircle]);
     isExisting = true;
     return paths[selectedCircle];
@@ -204,6 +213,75 @@ let post = function () {
     drawRoute();
 };
 
+let postcorner = function () {
+    routestart();
+    sixyardbreak();
+    if (circles[selectedCircle].x < canvas_width/2) {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.1;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.3;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.05;
+        ryto = circles[selectedCircle].y - canvas_height * 0.5;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    else {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.1;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.3;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
+        ryto = circles[selectedCircle].y - canvas_height * 0.5;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+};
+
+let cornerpost = function () {
+    routestart();
+    sixyardbreak();
+    if (circles[selectedCircle].x > canvas_width/2) {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.1;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.3;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.05;
+        ryto = circles[selectedCircle].y - canvas_height * 0.5;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    else {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.1;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.3;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
+        ryto = circles[selectedCircle].y - canvas_height * 0.5;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+};
+
+let sit = function () {
+    routestart();
+    sixyardbreak();
+    if (circles[selectedCircle].x < canvas_width/2) {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.1;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.32;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.11;
+        ryto = circles[selectedCircle].y - canvas_height * 0.28;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    else {
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.1;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.32;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.11;
+        ryto = circles[selectedCircle].y - canvas_height * 0.28;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+};
+
 let dig = function () {
     routestart();
     sixyardbreak();
@@ -330,6 +408,46 @@ let shoot = function () {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.3;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.063;
         ryto = circles[selectedCircle].y - canvas_height * 0.066;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+};
+
+let shootfake = function () {
+    routestart();
+    if (circles[selectedCircle].x > canvas_width/2) {
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.002, circles[selectedCircle].y - canvas_height * 0.02);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.003, circles[selectedCircle].y - canvas_height * 0.028);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.005, circles[selectedCircle].y - canvas_height * 0.038);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.007, circles[selectedCircle].y - canvas_height * 0.045);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.010, circles[selectedCircle].y - canvas_height * 0.050);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.015, circles[selectedCircle].y - canvas_height * 0.055);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.025, circles[selectedCircle].y - canvas_height * 0.060);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.035, circles[selectedCircle].y - canvas_height * 0.063);
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.15;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.13;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.065;
+        ryto = circles[selectedCircle].y - canvas_height * 0.03;
+        paths[selectedCircle].lineTo(rxfrom, ryfrom);
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    else {
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.002, circles[selectedCircle].y - canvas_height * 0.02);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.003, circles[selectedCircle].y - canvas_height * 0.028);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.005, circles[selectedCircle].y - canvas_height * 0.038);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.007, circles[selectedCircle].y - canvas_height * 0.045);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.010, circles[selectedCircle].y - canvas_height * 0.050);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.015, circles[selectedCircle].y - canvas_height * 0.055);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.025, circles[selectedCircle].y - canvas_height * 0.060);
+        paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.035, circles[selectedCircle].y - canvas_height * 0.063);
+        rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.15;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.13;
+        ryfrom = circles[selectedCircle].y - canvas_height * 0.065;
+        ryto = circles[selectedCircle].y - canvas_height * 0.03;
         paths[selectedCircle].lineTo(rxfrom, ryfrom);
         paths[selectedCircle].lineTo(rxto, ryto);
     }
@@ -499,6 +617,23 @@ let hitch = function () {
     drawRoute();
 };
 
+let stop = function () {
+    routestart();
+    sixyardbreak();
+    if (circles[selectedCircle].x > canvas_width/2) {
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
+        ryto = circles[selectedCircle].y - canvas_height * 0.18;
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    else {
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.05;
+        ryto = circles[selectedCircle].y - canvas_height * 0.18;
+        paths[selectedCircle].lineTo(rxto, ryto);
+    }
+    drawArrow(rxfrom, ryfrom, rxto, ryto);
+    drawRoute();
+};
+
 
 
 document.querySelector("#slant").addEventListener("click", function () {
@@ -569,6 +704,33 @@ document.querySelector("#dig").addEventListener("click", function () {
     dig();
 });
 
+document.querySelector("#stop").addEventListener("click", function () {
+    stop();
+});
+
+document.querySelector("#postcorner").addEventListener("click", function () {
+    postcorner();
+});
+
+document.querySelector("#cornerpost").addEventListener("click", function () {
+    cornerpost();
+});
+
+document.querySelector("#sit").addEventListener("click", function () {
+    sit();
+});
+
+document.querySelector("#shootfake").addEventListener("click", function () {
+    shootfake();
+});
+
+document.querySelector("#solidline").addEventListener("click", function () {
+    solidline();
+});
+
+document.querySelector("#dottedline").addEventListener("click", function () {
+    dottedline();
+});
 
 function drawArrow(fromx, fromy, tox, toy){
     let angle = Math.atan2(toy-fromy,tox-fromx);

@@ -13,53 +13,88 @@
     <div class="maincontent">
         <div class="canvascontainer">
             <div class="leftside">
-                <div class="headlinecontainer"><h2>In Routes</h2></div>
-                <div class ="buttoncontainer">
-                    <button id="slant">Slant</button>
-                    <button id="drag">Drag</button>
-                    <button id="hitch">Hitch</button>
-                    <button id="fivein">In</button>
-                    <button id="deepin">Deep In</button>
-                    <button id="post">Post</button>
-                    <button id="go">Go</button>
-                    <button id="seam">Seam</button>
-                    <button id="dig">Dig</button>
+                <div class="headlinecontainermiddle"><h2>Routes</h2></div>
+                <div class="headlinecontainer"><h2>Basic Routes</h2></div>
+                <div class="routebuttoncontainer">
+                    <div class ="buttoncontainer">
+                        <h3>In Routes</h3>
+                        <button id="slant">Slant</button>
+                        <button id="hitch">Hitch</button>
+                        <button id="fivein">In</button>
+                        <button id="post">Post</button>
+                        <button id="deepin">Deep In</button>
+                        <button id="seam">Seam</button>
+                    </div>
+                    <div class ="buttoncontainer">
+                        <h3>Out Routes</h3>
+                        <button id="shoot">Shoot</button>
+                        <button id="stop">Stop</button>
+                        <button id="fiveout">Out</button>
+                        <button id="corner">Corner</button>
+                        <button id="deepout">Deep Out</button>
+                        <button id="go">Go</button>
+                    </div>
                 </div>
+                <div class="spacer"></div>
+                <div class="headlinecontainer"><h2>Special Routes</h2></div>
+                <div class="routebuttoncontainer">
+                    <div class ="buttoncontainer">
+                        <h3>In Routes</h3>
+                        <button id="drag">Drag</button>
+                        <button id="dig">Dig</button>
+                        <button id="sit">Sit</button>
+                        <button id="cornerpost">Corner Post</button>
+                    </div>
+                    <div class ="buttoncontainer">
+                        <h3>Out Routes</h3>
+                        <button id="wheel">Wheel</button>
+                        <button id="comeback">Comeback</button>
+                        <button id="whip">Whip</button>
+                        <button id="postcorner">Post Corner</button>
+                        <button id="shootfake">Shoot Fake</button> 
+                        <button id="goallinefade">Goalline Fade</button>
+                    </div>
+                </div>
+                <button id="customRouteFinished">Custom Route abschließen</button>      
             </div>
             <div class="canvasdisplay">
                 <div class="headlinecontainermiddle"><h2>Create your own play</h2></div>
                 <canvas id = "canvas"></canvas>
                 <script src="./canvas.js"></script>
                 <div class="savecontainer">
-                    <button id="simpleDownload">Als Bild speichern</button>
-                    <button id="customRouteFinished">Custom Route abschließen</button>                   
+                    <button id="simpleDownload">Als Bild speichern</button>             
                     <button id="clearRoutes">Routen löschen</button>
                 </div>
-                <div class="formationcontainer">
-                    <button id="spreadleft">Spread Left</button>
-                    <button id="spreadright">Spread Right</button>
-                    <button id="tightleft">Tight Left</button>
-                    <button id="tightright">Tight Right</button>
-                    <button id="bunchopenleft">Bunch Open Left</button>
-                    <button id="bunchopenright">Bunch Open Right</button>
-                    <button id="allbunchleft">All Bunch Left</button>
-                    <button id="allbunchright">All Bunch Right</button>
-                    <button id="tripsleft">Trips Left</button>
-                    <button id="tripsright">Trips Right</button>
-                </div>
-
             </div>
             <div class="rightside">
-                <div class="headlinecontainer"><h2>Out Routes</h2></div>
-                <div class ="buttoncontainer">
-                    <button id="shoot">Shoot</button>
-                    <button id="fiveout">Out</button>
-                    <button id="deepout">Deep Out</button>
-                    <button id="corner">Corner</button>
-                    <button id="wheel">Wheel</button>
-                    <button id="comeback">Comeback</button>
-                    <button id="goallinefade">Goalline Fade</button>
-                    <button id="whip">Whip</button>
+                <div class="headlinecontainermiddle"><h2>Formations & Settings</h2></div>
+                <div class="headlinecontainer"><h2>Formations</h2></div>
+                <div class="routebuttoncontainer">
+                    <div class ="buttoncontainer">
+                        <h3>Strong Left</h3>
+                        <button id="spreadleft">Spread Left</button>
+                        <button id="tightleft">Tight Left</button>
+                        <button id="bunchopenleft">Bunch Open Left</button>
+                        <button id="allbunchleft">All Bunch Left</button>
+                        <button id="tripsleft">Trips Left</button>
+                    </div>
+                    <div class ="buttoncontainer">
+                        <h3>Strong Right</h3>
+                        <button id="spreadright">Spread Right</button>
+                        <button id="tightright">Tight Right</button>
+                        <button id="bunchopenright">Bunch Open Right</button>
+                        <button id="allbunchright">All Bunch Right</button>
+                        <button id="tripsright">Trips Right</button>
+                    </div>
+                </div>
+                <div class="headlinecontainer"><h2>Route Line Format</h2></div>
+                <div class="routebuttoncontainer">
+                    <div class ="buttoncontainer">
+                        <button id="solidline">Solid Line</button>
+                    </div>
+                    <div class ="buttoncontainer">
+                        <button id="dottedline">Dotted Line</button>
+                    </div>
                 </div>
             </div>
         </div>

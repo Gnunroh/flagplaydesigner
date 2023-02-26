@@ -4,19 +4,22 @@
     box-sizing: border-box;
 
 }
-
+.spacer {
+    height: 200px;
+}
 .canvascontainer {
     display: flex;
 }
 
 .buttoncontainer {
-    padding: 0;
+    padding: 5px;
     margin: 0;
-    width: 400px;
+    width: 200px;
     display: flex;
     flex-wrap: wrap;
     row-gap: 5px;
     height: 75%;
+    justify-self: center;
 }
 
 .formationcontainer {
@@ -26,6 +29,13 @@
     display: flex;
     flex-wrap: wrap;
     row-gap: 5px;
+}
+
+.routebuttoncontainer {
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 5px;
+    justify-self: center;
 }
 
 button {
@@ -43,6 +53,7 @@ button {
 
 .headlinecontainer {
     width: 400px;
+    padding-top: 5%;
     display:flex;
     flex-direction: column;
     align-items: center;
@@ -59,6 +70,12 @@ h2 {
     margin: 5px;;
 }
 
+h3 {
+    justify-self: center;
+    align-self: center;
+    margin: 5px;;
+}
+
 #canvas {
     border: 2px solid black;
     object-fit: none;
@@ -70,6 +87,17 @@ h2 {
     justify-content: center;
 }
 
-#simpleDownload {
-    align-self: center;
+#customRouteFinished {
+    justify-self: center;
+    margin-top: 10%;
 }
+
+.leftside {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* #simpleDownload {
+    align-self: center;
+} */
