@@ -129,8 +129,11 @@ let mouseDown = function(event) {
         paths[selectedCircle].lineTo(startX, startY);
         c.lineWidth = routewidth;
         c.strokeStyle = 'black';
-        c.stroke(paths[selectedCircle]);
-        // drawArrow(rxfrom, ryfrom, rxto, ryto);
+        // if (routestyle == "dotted") {
+        //     c.setLineDash([5, 15])
+        // };
+        // c.stroke(paths[selectedCircle]);
+
         drawRoute();
         isExisting = true;
         return paths[selectedCircle];
@@ -142,11 +145,13 @@ let mouseDown = function(event) {
         rxto = startX;
         ryto = startY;
         paths[selectedCircle].lineTo(startX, startY);
-        // drawArrow(rxfrom, ryfrom, rxto, ryto);
+        // if (routestyle == "dotted") {
+        //     c.setLineDash([5, 15])
+        // };
         drawRoute();
         c.lineWidth = routewidth;
         c.strokeStyle = 'black';
-        c.stroke(paths[selectedCircle]);
+        // c.stroke(paths[selectedCircle]);
     }
 }
 

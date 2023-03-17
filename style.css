@@ -5,7 +5,7 @@
 
 }
 .spacer {
-    height: 200px;
+    height: 5%;
 }
 .canvascontainer {
     display: flex;
@@ -17,8 +17,8 @@
     width: 200px;
     display: flex;
     flex-wrap: wrap;
+    height:70%;
     row-gap: 5px;
-    height: 75%;
     justify-self: center;
 }
 
@@ -89,7 +89,6 @@ h3 {
 
 #customRouteFinished {
     justify-self: center;
-    margin-top: 10%;
 }
 
 .leftside {

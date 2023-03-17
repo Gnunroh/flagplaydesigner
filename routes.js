@@ -13,6 +13,11 @@ document.querySelector("#customRouteFinished").addEventListener("click", functio
     drawRoute();
 });
 
+document.querySelector("#hotroute").addEventListener("click", function () {
+    c.strokeStyle = 'red';
+    c.stroke(paths[selectedCircle]);
+});
+
 let dottedline = function() {
     routestyle = "dotted"
 };
@@ -29,6 +34,11 @@ let setbackborder = function() {
         c.lineWidth = 4;
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
+    c.fillStyle='orange';
+    c.strokeStyle='orange';
+    c.fillRect(circles[3].x,circles[3].y, circles[3].width, circles[3].height);
+    c.strokeRect(circles[3].x,circles[3].y, circles[3].width, circles[3].height);
+
 };
 
 let clearRoutes = function() {
@@ -72,11 +82,14 @@ let twelveyardbreak = function() {
 };
 let drawRoute = function () {
     c.lineWidth = routewidth;
+    c.setLineDash([]);
     c.strokeStyle = 'black';
-    if (routestyle == "dotted") {
-        c.setLineDash([30, 10])
-    };
     c.stroke(paths[selectedCircle]);
+    if (routestyle == "dotted") {
+        c.setLineDash([20, 20]);
+        c.strokeStyle = 'white';
+        c.stroke(paths[selectedCircle]);
+    };
     isExisting = true;
     return paths[selectedCircle];
 };
@@ -85,7 +98,7 @@ let slant = function () {
     setbackborder();
     routestart();
     twoyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.2;
         ryto = circles[selectedCircle].y - canvas_height * 0.1;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -102,7 +115,7 @@ let slant = function () {
 let goallinefade = function () {
     routestart();
     twoyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.05;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.1;
@@ -125,7 +138,7 @@ let goallinefade = function () {
 let whip = function () {
     routestart();
     twoyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.15;
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.15;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.1;
@@ -148,7 +161,7 @@ let whip = function () {
 let corner = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.15;
         ryto = circles[selectedCircle].y - canvas_height * 0.4;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -165,7 +178,7 @@ let corner = function () {
 let go = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.005;
         ryto = circles[selectedCircle].y - canvas_height * 0.6;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -182,7 +195,7 @@ let go = function () {
 let seam = function () {
     routestart();
     twoyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
         ryto = circles[selectedCircle].y - canvas_height * 0.6;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -199,7 +212,7 @@ let seam = function () {
 let post = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.15;
         ryto = circles[selectedCircle].y - canvas_height * 0.4;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -216,7 +229,7 @@ let post = function () {
 let postcorner = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.1;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.3;
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.05;
@@ -239,7 +252,7 @@ let postcorner = function () {
 let cornerpost = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.1;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.3;
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.05;
@@ -262,7 +275,7 @@ let cornerpost = function () {
 let sit = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.1;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.32;
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.11;
@@ -285,12 +298,12 @@ let sit = function () {
 let dig = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.15;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.4;
         paths[selectedCircle].lineTo(rxfrom, ryfrom);
-        if (circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3 >= canvas_width) {
-            rxto = canvas_width - canvas_width*0.05;
+        if (circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3 <= canvas_width) {
+            rxto = canvas_width - canvas_width*0.08;
         }
         else {
             rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.6;   
@@ -303,8 +316,8 @@ let dig = function () {
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.15;
         ryfrom = circles[selectedCircle].y - canvas_height * 0.4;
         paths[selectedCircle].lineTo(rxfrom, ryfrom);
-        if (circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.3 <= canvas_width*0.05) {
-            rxto = canvas_width*0.05;
+        if (circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.3 >= canvas_width*0.05) {
+            rxto = canvas_width*0.08;
         }
         else {
             rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.6;   
@@ -318,7 +331,7 @@ let dig = function () {
 
 let wheel = function () {
     routestart();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.002, circles[selectedCircle].y - canvas_height * 0.02);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.003, circles[selectedCircle].y - canvas_height * 0.028);
@@ -377,7 +390,7 @@ let wheel = function () {
 
 let shoot = function () {
     routestart();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.002, circles[selectedCircle].y - canvas_height * 0.02);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.003, circles[selectedCircle].y - canvas_height * 0.028);
@@ -417,7 +430,7 @@ let shoot = function () {
 
 let shootfake = function () {
     routestart();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.002, circles[selectedCircle].y - canvas_height * 0.02);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.003, circles[selectedCircle].y - canvas_height * 0.028);
@@ -457,7 +470,7 @@ let shootfake = function () {
 
 let drag = function () {
     routestart();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.002, circles[selectedCircle].y - canvas_height * 0.02);
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.003, circles[selectedCircle].y - canvas_height * 0.028);
@@ -498,7 +511,7 @@ let drag = function () {
 let fiveout = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         if (circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3 >= canvas_width) {
             rxto = canvas_width - canvas_width*0.05;
         }
@@ -525,7 +538,7 @@ let fiveout = function () {
 let fivein = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3;
         ryto = circles[selectedCircle].y - canvas_height * 0.21;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -542,7 +555,7 @@ let fivein = function () {
 let deepout = function () {
     routestart();
     twelveyardbreak();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         if (circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3 >= canvas_width) {
             rxto = canvas_width - canvas_width*0.05;
         }
@@ -569,7 +582,7 @@ let deepout = function () {
 let deepin = function () {
     routestart();
     twelveyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.3;
         ryto = circles[selectedCircle].y - canvas_height * 0.42;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -586,7 +599,7 @@ let deepin = function () {
 let comeback = function () {
     routestart();
     twelveyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.1;
         ryto = circles[selectedCircle].y - canvas_height * 0.35;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -603,7 +616,7 @@ let comeback = function () {
 let hitch = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x < canvas_width/2) {
+    if (circles[selectedCircle].x < canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
         ryto = circles[selectedCircle].y - canvas_height * 0.18;
         paths[selectedCircle].lineTo(rxto, ryto);
@@ -620,7 +633,7 @@ let hitch = function () {
 let stop = function () {
     routestart();
     sixyardbreak();
-    if (circles[selectedCircle].x > canvas_width/2) {
+    if (circles[selectedCircle].x > canvas_width*0.475) {
         rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.05;
         ryto = circles[selectedCircle].y - canvas_height * 0.18;
         paths[selectedCircle].lineTo(rxto, ryto);
