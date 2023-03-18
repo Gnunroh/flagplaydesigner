@@ -86,7 +86,7 @@ let drawRoute = function () {
     c.strokeStyle = 'black';
     c.stroke(paths[selectedCircle]);
     if (routestyle == "dotted") {
-        c.setLineDash([20, 20]);
+        c.setLineDash([10, 30]);
         c.strokeStyle = 'white';
         c.stroke(paths[selectedCircle]);
     };
@@ -95,17 +95,16 @@ let drawRoute = function () {
 };
 
 let slant = function () {
-    setbackborder();
     routestart();
     twoyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
-        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.2;
-        ryto = circles[selectedCircle].y - canvas_height * 0.1;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.25;
+        ryto = circles[selectedCircle].y - canvas_height * 0.125;
         paths[selectedCircle].lineTo(rxto, ryto);
     }
     else {
-        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.2;
-        ryto = circles[selectedCircle].y - canvas_height * 0.1;
+        rxto = circles[selectedCircle].x + circles[selectedCircle].width/2 - canvas_width * 0.25;
+        ryto = circles[selectedCircle].y - canvas_height * 0.125;
         paths[selectedCircle].lineTo(rxto, ryto);
     }
     drawArrow(rxfrom, ryfrom, rxto, ryto);

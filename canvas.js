@@ -204,9 +204,9 @@ let draw_playingfield = function () {
     c.font = "20px Arial";
     c.fillStyle = "black";
     c.fillText("LoS", 30, canvas_height * 0.7 + circles[0].height/2 - 10);
-    c.fillText("5 Yards", 30, canvas_height * 0.5 + circles[0].height/2 - 10);
-    c.fillText("10 Yards", 30, canvas_height * 0.3 + circles[0].height/2 - 10);
-    c.fillText("15 Yards", 30, canvas_height * 0.1 + circles[0].height/2 - 10);
+    c.fillText("5 Yds", 30, canvas_height * 0.5 + circles[0].height/2 - 10);
+    c.fillText("10 Yds", 30, canvas_height * 0.3 + circles[0].height/2 - 10);
+    c.fillText("15 Yds", 30, canvas_height * 0.1 + circles[0].height/2 - 10);
     let lineofscrimmage = new Path2D();
     lineofscrimmage.moveTo(0, canvas_height * 0.7 + circles[0].height/2);
     lineofscrimmage.lineTo(canvas_width, canvas_height * 0.7 + circles[0].height/2);
