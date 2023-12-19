@@ -3,8 +3,24 @@ const c = canvas.getContext("2d");
 const canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 const canvasTop = canvas.offsetTop + canvas.clientTop;
 
-console.log(canvasLeft)
-console.log(canvasTop)
+function drawArrow(fromx, fromy, tox, toy){
+    let angle = Math.atan2(toy-fromy,tox-fromx);
+    //variables to be used when creating the arrow
+    const width = 22;
+    let headlen = 10;
+    
+    //starting a new path from the head of the arrow to one of the sides of the point
+    paths[selectedCircle].moveTo(tox, toy);
+    paths[selectedCircle].lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+    
+    //path from the side point of the arrow, to the other side point
+    paths[selectedCircle].lineTo(tox-headlen*Math.cos(angle+Math.PI/7),toy-headlen*Math.sin(angle+Math.PI/7));
+    
+    //path from the side point back to the tip of the arrow, and then again to the opposite side point
+    paths[selectedCircle].lineTo(tox, toy);
+    paths[selectedCircle].lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
+}
+
 
 canvas.width = window.innerHeight * 0.8;
 canvas.heigth = window.innerHeight * 0.8;
@@ -41,7 +57,7 @@ let paths = [];
 let circles = [];
 let routewidth = 15;
 let routestyle = "solid";
-let currentCircleIndex = null;
+let currentCircleIndex = null; //null
 let isDragging = false;
 let isSelected = false;
 let isExisting = false;
@@ -49,14 +65,11 @@ let selectedCircle = 0;
 let startX;
 let startY;
 
-circles.push({x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
-circles.push({x: canvas_width * 0.65, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
-circles.push({x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
-circles.push({x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
-circles.push({x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'});
-
-console.log(circles)
-
+circles.push({x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black', assignedRoute:null});
+circles.push({x: canvas_width * 0.65, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
+circles.push({x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
+circles.push({x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
+circles.push({x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
 
 
 let path1 = new Path2D();
@@ -101,9 +114,6 @@ let mouseDown = function(event) {
     };
     for (let circle of circles) {
         if (isMouseInCircle(startX, startY, circle)) {
-            // try {drawArrow(rxfrom, ryfrom, rxto, ryto)}
-            // finally {
-            // drawRoute();
             currentCircleIndex = index;
             isDragging = true;
             isSelected = true;
@@ -125,15 +135,14 @@ let mouseDown = function(event) {
         ryfrom = circles[selectedCircle].y + 5;
         rxto = startX;
         ryto = startY;
+        customRoutes[selectedCircle].x.push(rxfrom);
+        customRoutes[selectedCircle].y.push(ryfrom);
+        customRoutes[selectedCircle].x.push(rxto);
+        customRoutes[selectedCircle].y.push(ryto);
         paths[selectedCircle].moveTo(circles[selectedCircle].x + circles[selectedCircle].width/2, circles[selectedCircle].y + 5);
         paths[selectedCircle].lineTo(startX, startY);
         c.lineWidth = routewidth;
         c.strokeStyle = 'black';
-        // if (routestyle == "dotted") {
-        //     c.setLineDash([5, 15])
-        // };
-        // c.stroke(paths[selectedCircle]);
-
         drawRoute();
         isExisting = true;
         return paths[selectedCircle];
@@ -144,14 +153,12 @@ let mouseDown = function(event) {
         ryfrom = ryto;
         rxto = startX;
         ryto = startY;
+        customRoutes[selectedCircle].x.push(rxto);
+        customRoutes[selectedCircle].y.push(ryto);
         paths[selectedCircle].lineTo(startX, startY);
-        // if (routestyle == "dotted") {
-        //     c.setLineDash([5, 15])
-        // };
         drawRoute();
         c.lineWidth = routewidth;
         c.strokeStyle = 'black';
-        // c.stroke(paths[selectedCircle]);
     }
 }
 
@@ -189,8 +196,7 @@ let mouseMove = function(event){
         let currentCircle = circles[currentCircleIndex];
         currentCircle.x += dx;
         currentCircle.y += dy;
-        
-        // c.translate(currentCircle.x, currentCircle.y);
+
         draw_circles();
 
         startX = mouseX;
@@ -234,7 +240,6 @@ let draw_playingfield = function () {
 }
 
 let draw_circles = function() {
-    console.log(currentCircleIndex);
     c.clearRect(0, 0, canvas_width, canvas_height);
     draw_playingfield();
     for (let circle of circles) {
@@ -250,10 +255,16 @@ let draw_circles = function() {
             c.strokeStyle = 'black';
             c.stroke(paths[i]);
         };
-        paths[currentCircleIndex] = new Path2D();
-
+        if(currentCircleIndex != null){
+            paths[currentCircleIndex] = new Path2D();
+            let savedRoute = circles[currentCircleIndex].assignedRoute;
+            let newRoute = new Function(savedRoute);
+            newRoute();
+        }
     };
 }
+
+
 
 
 function draw(){
@@ -289,8 +300,6 @@ function draw(){
     }
 
 }
-
-
 
 draw_circles();
 canvas.onmousedown = mouseDown;

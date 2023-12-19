@@ -10,6 +10,9 @@ document.querySelector("#clearRoutes").addEventListener("click", function () {
 
 document.querySelector("#customRouteFinished").addEventListener("click", function () {
     drawArrow(rxfrom, ryfrom, rxto, ryto);
+    customRoutes[selectedCircle].endX = rxto;
+    customRoutes[selectedCircle].endY = ryto;
+    circles[selectedCircle].assignedRoute = "customRouteDraw()";
     drawRoute();
 });
 
@@ -42,13 +45,16 @@ let setbackborder = function() {
 };
 
 let clearRoutes = function() {
-    console.log(currentCircleIndex);
     c.clearRect(0, 0, canvas_width, canvas_height);
-    draw_playingfield();
     for (let i = 0; i < paths.length; i++) {
         paths[i] = new Path2D();
-
+        circles[i].assignedRoute = null;
+        customRoutes[i].x = [];
+        customRoutes[i].y = [];
+        customRoutes[i].endX = null;
+        customRoutes[i].endY = null;
     };
+    draw_playingfield();
     for (let circle of circles) {
         c.fillStyle = circle.color;
         c.fillRect(circle.x, circle.y, circle.width, circle.height);
@@ -57,6 +63,35 @@ let clearRoutes = function() {
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
 }
+
+let customRoutes = []
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+
+let customRouteDraw = function() {
+    firstX = circles[selectedCircle].x + circles[selectedCircle].width/2;
+    firstY = circles[selectedCircle].y + 5;
+    DiffX = firstX-customRoutes[selectedCircle].x[0];
+    DiffY = firstY-customRoutes[selectedCircle].y[0];
+    paths[selectedCircle].moveTo(firstX, firstY);
+    for (let i = 1; i < customRoutes[selectedCircle].x.length+1; i++){
+        nextX = customRoutes[selectedCircle].x[i]+DiffX;
+        nextY = customRoutes[selectedCircle].y[i]+DiffY;
+        paths[selectedCircle].lineTo(nextX, nextY);
+    }
+    nextX = customRoutes[selectedCircle].x[customRoutes[selectedCircle].x.length-2]+DiffX;
+    nextY = customRoutes[selectedCircle].y[customRoutes[selectedCircle].y.length-2]+DiffY;
+    finalX = customRoutes[selectedCircle].endX+DiffX;
+    finalY = customRoutes[selectedCircle].endY+DiffY;
+    c.lineWidth = routewidth;
+    c.strokeStyle = 'black';
+    drawArrow(nextX, nextY, finalX, finalY);
+    drawRoute();
+}
+
 
 let routestart = function() {
     rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2;
@@ -80,6 +115,7 @@ let twelveyardbreak = function() {
     ryfrom = circles[selectedCircle].y - canvas_height * 0.42;
     paths[selectedCircle].lineTo(rxfrom, ryfrom);
 };
+
 let drawRoute = function () {
     c.lineWidth = routewidth;
     c.setLineDash([]);
@@ -95,6 +131,7 @@ let drawRoute = function () {
 };
 
 let slant = function () {
+    circles[currentCircleIndex].assignedRoute = "slant()";
     routestart();
     twoyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -109,9 +146,11 @@ let slant = function () {
     }
     drawArrow(rxfrom, ryfrom, rxto, ryto);
     drawRoute();
+    
 };
 
 let goallinefade = function () {
+    circles[currentCircleIndex].assignedRoute = "goallinefade()";
     routestart();
     twoyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -135,6 +174,7 @@ let goallinefade = function () {
 };
 
 let whip = function () {
+    circles[currentCircleIndex].assignedRoute = "whip()";
     routestart();
     twoyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -158,6 +198,7 @@ let whip = function () {
 };
 
 let corner = function () {
+    circles[currentCircleIndex].assignedRoute = "corner()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x > canvas_width*0.475) {
@@ -175,6 +216,7 @@ let corner = function () {
 };
 
 let go = function () {
+    circles[currentCircleIndex].assignedRoute = "go()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x > canvas_width*0.475) {
@@ -192,6 +234,7 @@ let go = function () {
 };
 
 let seam = function () {
+    circles[currentCircleIndex].assignedRoute = "seam()";
     routestart();
     twoyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -209,6 +252,7 @@ let seam = function () {
 };
 
 let post = function () {
+    circles[currentCircleIndex].assignedRoute = "post()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -226,6 +270,7 @@ let post = function () {
 };
 
 let postcorner = function () {
+    circles[currentCircleIndex].assignedRoute = "postcorner()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -249,6 +294,7 @@ let postcorner = function () {
 };
 
 let cornerpost = function () {
+    circles[currentCircleIndex].assignedRoute = "cornerpost()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x > canvas_width*0.475) {
@@ -272,6 +318,7 @@ let cornerpost = function () {
 };
 
 let sit = function () {
+    circles[currentCircleIndex].assignedRoute = "sit()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -295,6 +342,7 @@ let sit = function () {
 };
 
 let dig = function () {
+    circles[currentCircleIndex].assignedRoute = "dig()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -329,6 +377,7 @@ let dig = function () {
 };
 
 let wheel = function () {
+    circles[currentCircleIndex].assignedRoute = "wheel()";
     routestart();
     if (circles[selectedCircle].x > canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
@@ -388,6 +437,7 @@ let wheel = function () {
 };
 
 let shoot = function () {
+    circles[currentCircleIndex].assignedRoute = "shoot()";
     routestart();
     if (circles[selectedCircle].x > canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
@@ -428,6 +478,7 @@ let shoot = function () {
 };
 
 let shootfake = function () {
+    circles[currentCircleIndex].assignedRoute = "shootfake()";
     routestart();
     if (circles[selectedCircle].x > canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
@@ -468,6 +519,7 @@ let shootfake = function () {
 };
 
 let drag = function () {
+    circles[currentCircleIndex].assignedRoute = "drag()";
     routestart();
     if (circles[selectedCircle].x < canvas_width*0.475) {
         paths[selectedCircle].lineTo(circles[selectedCircle].x + circles[selectedCircle].width/2 + canvas_width * 0.001, circles[selectedCircle].y - canvas_height * 0.01);
@@ -508,6 +560,7 @@ let drag = function () {
 };
 
 let fiveout = function () {
+    circles[currentCircleIndex].assignedRoute = "fiveout()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x > canvas_width*0.475) {
@@ -535,6 +588,7 @@ let fiveout = function () {
 };
 
 let fivein = function () {
+    circles[currentCircleIndex].assignedRoute = "fivein()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -552,6 +606,7 @@ let fivein = function () {
 };
 
 let deepout = function () {
+    circles[currentCircleIndex].assignedRoute = "deepout()";
     routestart();
     twelveyardbreak();
     if (circles[selectedCircle].x > canvas_width*0.475) {
@@ -579,6 +634,7 @@ let deepout = function () {
 };
 
 let deepin = function () {
+    circles[currentCircleIndex].assignedRoute = "deepin()";
     routestart();
     twelveyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -596,6 +652,7 @@ let deepin = function () {
 };
 
 let comeback = function () {
+    circles[currentCircleIndex].assignedRoute = "comeback()";
     routestart();
     twelveyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -613,6 +670,7 @@ let comeback = function () {
 };
 
 let hitch = function () {
+    circles[currentCircleIndex].assignedRoute = "hitch()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x < canvas_width*0.475) {
@@ -630,6 +688,7 @@ let hitch = function () {
 };
 
 let stop = function () {
+    circles[currentCircleIndex].assignedRoute = "stop()";
     routestart();
     sixyardbreak();
     if (circles[selectedCircle].x > canvas_width*0.475) {
