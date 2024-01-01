@@ -1,11 +1,9 @@
-document.querySelector("#simpleDownload").addEventListener("click", function () {
-	setbackborder();
-    let image_data = canvas.toDataURL("image/png");
-	// Neues Fenster für die Bilddaten
-	window.open(image_data);});
-
 document.querySelector("#clearRoutes").addEventListener("click", function () {
     clearRoutes();
+});
+
+document.querySelector("#clearCurrentRoute").addEventListener("click", function () {
+    clearCurrentRoute();
 });
 
 document.querySelector("#customRouteFinished").addEventListener("click", function () {
@@ -20,6 +18,10 @@ document.querySelector("#hotroute").addEventListener("click", function () {
     c.strokeStyle = 'red';
     c.stroke(paths[selectedCircle]);
 });
+
+
+
+//Functions
 
 let dottedline = function() {
     routestyle = "dotted"
@@ -49,6 +51,38 @@ let clearRoutes = function() {
     for (let i = 0; i < paths.length; i++) {
         paths[i] = new Path2D();
         circles[i].assignedRoute = null;
+        customRoutes = [];
+        customRoutes.push({x: [], y: [], endX: null, endY: null});
+        customRoutes.push({x: [], y: [], endX: null, endY: null});
+        customRoutes.push({x: [], y: [], endX: null, endY: null});
+        customRoutes.push({x: [], y: [], endX: null, endY: null});
+        customRoutes.push({x: [], y: [], endX: null, endY: null});
+    };
+    draw_playingfield();
+    for (let circle of circles) {
+        c.fillStyle = circle.color;
+        c.fillRect(circle.x, circle.y, circle.width, circle.height);
+        c.strokeStyle = 'black';
+        c.lineWidth = 4;
+        c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+    };
+}
+
+let clearCurrentRoute = function() {
+    c.clearRect(0, 0, canvas_width, canvas_height);
+    for (let i = 0; i < paths.length; i++) {
+        if (i == currentCircleIndex) {
+            paths[i] = new Path2D();
+            circles[i].assignedRoute = null;
+            customRoutes[i].x = [];
+            customRoutes[i].y = [];
+            customRoutes[i].endX = null;
+            customRoutes[i].endY = null;
+        } else {
+            draw_circles();
+        }
+        paths[i] = new Path2D();
+        circles[i].assignedRoute = null;
         customRoutes[i].x = [];
         customRoutes[i].y = [];
         customRoutes[i].endX = null;
@@ -64,12 +98,7 @@ let clearRoutes = function() {
     };
 }
 
-let customRoutes = []
-customRoutes.push({x: [], y: [], endX: null, endY: null});
-customRoutes.push({x: [], y: [], endX: null, endY: null});
-customRoutes.push({x: [], y: [], endX: null, endY: null});
-customRoutes.push({x: [], y: [], endX: null, endY: null});
-customRoutes.push({x: [], y: [], endX: null, endY: null});
+
 
 let customRouteDraw = function() {
     firstX = circles[selectedCircle].x + circles[selectedCircle].width/2;
@@ -146,7 +175,6 @@ let slant = function () {
     }
     drawArrow(rxfrom, ryfrom, rxto, ryto);
     drawRoute();
-    
 };
 
 let goallinefade = function () {
@@ -704,8 +732,6 @@ let stop = function () {
     drawArrow(rxfrom, ryfrom, rxto, ryto);
     drawRoute();
 };
-
-
 
 document.querySelector("#slant").addEventListener("click", function () {
     slant();

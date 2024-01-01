@@ -55,6 +55,7 @@ class Circle {
 
 let paths = [];
 let circles = [];
+let squares = [];
 let routewidth = 15;
 let routestyle = "solid";
 let currentCircleIndex = null; //null
@@ -82,6 +83,29 @@ paths.push(path2);
 paths.push(path3);
 paths.push(path4);
 paths.push(path5);
+
+let customRoutes = []
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+customRoutes.push({x: [], y: [], endX: null, endY: null});
+
+//Define database relationships
+let playName = "";
+let receiver1 = circles[0];
+let receiver2 = circles[1];
+let receiver3 = circles[2];
+let receiver4 = circles[3];
+let receiver5 = circles[4];
+let customRoute1 = customRoutes[0];
+let customRoute2 = customRoutes[1];
+let customRoute3 = customRoutes[2];
+let customRoute4 = customRoutes[3];
+let customRoute5 = customRoutes[4];
+
+
+//Define canvas
 
 let isMouseInCircle = function(x, y, circle) {
     let circleLeft = circle.x;
