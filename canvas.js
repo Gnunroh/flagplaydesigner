@@ -1,5 +1,22 @@
 const canvas = document.getElementById("canvas");
 const c = canvas.getContext("2d");
+
+canvas.width = window.innerHeight * 0.8;
+canvas.heigth = window.innerHeight * 0.8;
+
+//Resizing
+canvas.width = window.innerHeight * 0.8;
+canvas.height = window.innerHeight * 0.8;
+c.lineWidth = 20;
+
+//Define Values
+
+canvas.style.border = '5px solid black';
+
+let canvas_width = canvas.width;
+let canvas_height = canvas.height;
+
+
 const canvasLeft = canvas.offsetLeft + canvas.clientLeft;
 const canvasTop = canvas.offsetTop + canvas.clientTop;
 
@@ -22,20 +39,6 @@ function drawArrow(fromx, fromy, tox, toy){
 }
 
 
-canvas.width = window.innerHeight * 0.8;
-canvas.heigth = window.innerHeight * 0.8;
-
-//Resizing
-canvas.width = window.innerHeight * 0.8;
-canvas.height = window.innerHeight * 0.8;
-c.lineWidth = 20;
-
-//Define Values
-
-canvas.style.border = '5px solid black';
-
-let canvas_width = canvas.width;
-let canvas_height = canvas.height;
 
 class Circle {
     constructor(xpoint, ypoint, radius, color) {

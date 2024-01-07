@@ -11,11 +11,22 @@
     display: flex;
 }
 
+.maincontent {
+    display: flex;
+    justify-content: center;
+}
+
 .navbar {
     height: 64px;
     width: 100%;
-    background-color: yellow;
+    background-color: lightyellow;
+    border-bottom: grey solid 2px;
     margin: 0px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
 h1 {
@@ -23,9 +34,8 @@ h1 {
 }
 
 .popup {
-    width: 70%;
-    background: grey;
-    border-radius: 6px;
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
     position: absolute;
     top: 0;
     left: 50%;
@@ -40,8 +50,20 @@ h1 {
 .open-popup{
     visibility: visible;
     top: 50%;
-    transform: translate(-60%, -60%) scale(1);
+    transform: translate(-50%, -50%) scale(1);
+    height: 100%;
+    overflow: auto;
+}
+
+.gridcontainer{
+    visibility: inherit;
+    border-radius: .75em;
+    top: 50%;
+    background-color: white;
+    opacity: 100%;
+    transform: translate(25%, 25%) scale(1);
     height: 70%;
+    width:70%;
     overflow: auto;
 }
 
@@ -154,6 +176,25 @@ h3 {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
+    justify-content: center;
+}
+
+.popupheader {
+    height: 4em;
+    z-index: 1;
+    border-bottom: grey solid 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2em;
+
+}
+
+#close {
+    background-color: red;
+    color: white;
+    width: 2em;
+    height: 2em;
 }
 
 /* #simpleDownload {

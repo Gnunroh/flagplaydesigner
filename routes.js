@@ -71,22 +71,17 @@ let clearRoutes = function() {
 let clearCurrentRoute = function() {
     c.clearRect(0, 0, canvas_width, canvas_height);
     for (let i = 0; i < paths.length; i++) {
-        if (i == currentCircleIndex) {
-            paths[i] = new Path2D();
-            circles[i].assignedRoute = null;
-            customRoutes[i].x = [];
-            customRoutes[i].y = [];
-            customRoutes[i].endX = null;
-            customRoutes[i].endY = null;
+        if (i != selectedCircle) {
+            console.log("Identified")
+            continue
         } else {
-            draw_circles();
-        }
         paths[i] = new Path2D();
         circles[i].assignedRoute = null;
         customRoutes[i].x = [];
         customRoutes[i].y = [];
         customRoutes[i].endX = null;
         customRoutes[i].endY = null;
+        }
     };
     draw_playingfield();
     for (let circle of circles) {
@@ -96,7 +91,48 @@ let clearCurrentRoute = function() {
         c.lineWidth = 4;
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
+    draw_circles();
+    // draw_playingfield();
+    // let i = 0;
+    // for (let circle of circles) {
+    //     // circle.x = circle.x/og_width*canvas_width;
+    //     // circle.y = circle.y/og_height*canvas_height;
+    //     // circle.width = circle.width/og_width*canvas_width;
+    //     // circle.height = circle.height/og_height*canvas_height;
+    //     c.fillStyle = circle.color;
+    //     c.fillRect(circle.x, circle.y, circle.width, circle.height);
+    //     c.strokeStyle = 'black';
+    //     c.lineWidth = 4;
+    //     c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+    //     if (i == selectedCircle) {
+    //         console.log("Match identified")
+    //         paths[i] = new Path2D();
+    //         circle.assignedRoute = null;
+
+    //     } else {
+    //         paths[i] = new Path2D();
+    //         let savedRoute = circle.assignedRoute;
+    //         let newRoute = new Function(savedRoute);
+    //         newRoute();
+            
+    //     }
+    //     i += 1
+    
+
+    // };
 }
+    // for (let i = 0; i < paths.length; i++) {
+    //     console.log(selectedCircle)
+
+    // drawRoute();
+    // for (let circle of circles) {
+    //     c.fillStyle = circle.color;
+    //     c.fillRect(circle.x, circle.y, circle.width, circle.height);
+    //     c.strokeStyle = 'black';
+    //     c.lineWidth = 4;
+    //     c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+    // };
+
 
 
 
