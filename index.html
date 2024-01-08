@@ -12,11 +12,10 @@
     <div class="navbar">
         <h1>FlagPlayDesigner</h1>
         <div class = "signupcontainer" id="authForm">
-            <input type="email" placeholder="email" id="userEmail">
-            <input type="password" placeholder="password" id="userPassword">
-            <button id = "logIn">Log in</button>
-            <button id = "signUp">Sign up for free</button>
-            <button id = "signOut">Log out</button>
+            <button id = "logInForm" class="open-button">Log in</button>
+            <button id = "signUpForm">Sign up for free</button>
+            <p class = "signOut" id="signedInText"></p>
+            <button class = "signOut" id="signOutForm">Log out</button>
         </div>
     </div>
     <div class="allcontent">
@@ -117,9 +116,10 @@
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
                         <input id="playName" type="text">
-                        <button id="savePlay" class="btn" >Save current play</button>    
+                        <button id="savePlay" class="btn" >Save to playbook</button>    
                     </div>
                     <div class ="buttoncontainer">
+                        <button id="saveToPicture">Save as picture</button>
                         <button id="loadPlay">Load play</button>
                     </div>
                 </div>
@@ -128,230 +128,397 @@
     </div>
     </div>
     <div class="popup" id="popup">
+        <div class = "popupheader">
+            <h2>Your Playbook</h2>
+            <button id="close">X</button>
+        </div>
         <div id="popup"class="gridcontainer" onclick="event.stopPropagation()">
-            <div class = "popupheader">
-                <h2>Your Playbook</h2>
-                <button id="close">X</button>
-            </div>
-            <div id="playContainer"></div>
+        <div id="playContainer"></div>
         </div>
     </div>
+    <div class="formPopup" id="popup">
+        <div id="popup"class="formgridcontainer" onclick="event.stopPropagation()">
+            <div class="form-container">
+                <h1 class="formItems">Login</h1>
+            
+                <label class="formItems" for="email"><b>Email</b></label>
+                <input class="formItems"type="email" placeholder="email" id="userEmail">
+                
+                <label class="formItems"for="psw"><b>Password</b></label>
+                <input class="formItems"type="password" placeholder="password" id="userPassword">
+                <input type="checkbox" id ="showPW"><p>Show Password</p>
+            
+                <button class="formItems"type="submit" id="logIn">Login</button>
+                <button class="formItems"type="button" id="formClose">Close</button>
+            </div>
+        </div>
+    </div>
+    <div class="signUpformPopup" id="popup">
+        <div id="popup"class="formgridcontainer" onclick="event.stopPropagation()">
+            <div class="form-container">
+                <h1 class="formItems">Signup</h1>
+            
+                <label class="formItems" for="email"><b>Email</b></label>
+                <input class="formItems"type="email" placeholder="email" id="userEmailsu">
+                
+                <label class="formItems"for="psw"><b>Password</b></label>
+                <input class="formItems"type="password" placeholder="password" id="userPasswordsu">
+                <label class="formItems"for="psw"><b>Password bestätigen</b></label>
+                <input class="formItems"type="password" placeholder="password" id="userPasswordsu2">
+                <input type="checkbox" id ="showPWsu"><p>Show Passwords</p>
+            
+                <button class="formItems"type="submit" id="signUp">Signup</button>
+                <button class="formItems"type="button" id="signUpFormClose">Close</button>
+            </div>
+        </div>
+    </div>
+</div> 
     <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
-        import { getDatabase, set, get, update, remove, ref, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        // TODO: Add SDKs for Firebase products that you want to use
-        // https://firebase.google.com/docs/web/setup#available-libraries
-      
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
-          apiKey: "AIzaSyB9kpQkrCGtr_9ksLVHHFrjheGsE1_WRQQ",
-          authDomain: "flagplaycreator.firebaseapp.com",
-          databaseURL: "https://flagplaycreator-default-rtdb.europe-west1.firebasedatabase.app",
-          projectId: "flagplaycreator",
-          storageBucket: "flagplaycreator.appspot.com",
-          messagingSenderId: "63445078950",
-          appId: "1:63445078950:web:a23c5ebec671660e63b567",
-          measurementId: "G-CC9P0D6VTK"
-        };
-        
-      
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getDatabase();
-        const auth = getAuth(app);
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
+import { getDatabase, set, get, update, remove, ref, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
-        // //Save play
-        let saveButton = document.querySelector("#savePlay");
-        let loadPlaybook = function (){
-            const dbref = ref(db);
-            get(child(dbref, "Plays/"))
-            .then((snapshot)=>{
-                if(snapshot.exists()) {
-                    let plays = snapshot.val();
-                    let i = 0;
-                    for (const [key, value] of Object.entries(plays)) {
-                        let playImage = value.image;
-                        let playName = value.play;
-                        let mainDiv = document.getElementById("playContainer");
-                        let playDiv = document.createElement("div");
-                        playDiv.className="playList"
-                        playDiv.setAttribute("id", `playTile${i}`);
-                        playDiv.setAttribute("style", "cursor: pointer");
-                        playDiv.setAttribute("playName", playName)
-                        mainDiv.appendChild(playDiv);
-                        
-                        let img = new Image(200, 200);
-                        img.src = playImage;
-                        let src = document.getElementById(`playTile${i}`);
-                        src.appendChild(img);
-                        let title = document.createElement("p");
-                        title.className = "playTitle"
-                        let node = document.createTextNode(playName);
-                        title.appendChild(node);
-                        src.appendChild(title);
-                        i += 1
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB9kpQkrCGtr_9ksLVHHFrjheGsE1_WRQQ",
+  authDomain: "flagplaycreator.firebaseapp.com",
+  databaseURL: "https://flagplaycreator-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "flagplaycreator",
+  storageBucket: "flagplaycreator.appspot.com",
+  messagingSenderId: "63445078950",
+  appId: "1:63445078950:web:a23c5ebec671660e63b567",
+  measurementId: "G-CC9P0D6VTK"
+};
 
-                    }
 
-                } else {
-                    alert("No play found.")
-                }
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+const db = getDatabase();
+const auth = getAuth(app);
+
+// //Save play
+let saveButton = document.querySelector("#savePlay");
+let loadPlaybook = function (){
+    const dbref = ref(db);
+    get(child(dbref, "Plays/"))
+    .then((snapshot)=>{
+        if(snapshot.exists()) {
+            let plays = snapshot.val();
+            let i = 0;
+            for (const [key, value] of Object.entries(plays)) {
+                let playImage = value.image;
+                let playName = value.play;
+                let mainDiv = document.getElementById("playContainer");
+                let playDiv = document.createElement("div");
+                playDiv.className="playList"
+                playDiv.setAttribute("id", `playTile${i}`);
+                playDiv.setAttribute("style", "cursor: pointer");
+                playDiv.setAttribute("playName", playName)
+                mainDiv.appendChild(playDiv);
+                
+                let img = new Image(200, 200);
+                img.src = playImage;
+                let src = document.getElementById(`playTile${i}`);
+                src.appendChild(img);
+                let title = document.createElement("p");
+                title.className = "playTitle"
+                let node = document.createTextNode(playName);
+                title.appendChild(node);
+                src.appendChild(title);
+                i += 1
+
             }
-            )
-            .catch((error)=>{
-                alert(error)
-            })
-        } 
-        saveButton.addEventListener("click", function() {
-            storePlay();
-        });
-        let storePlay = function (){
-            let playName = document.querySelector("#playName").value;
-            set(ref(db, "Plays/" + playName),{
-                play: playName,
-                wr1: circles[0],
-                wr2: circles[1],
-                wr3: circles[2],
-                wr4: circles[3],
-                wr5: circles[4],
-                cRoute1: customRoutes[0],
-                cRoute2: customRoutes[1],
-                cRoute3: customRoutes[2],
-                cRoute4: customRoutes[3],
-                cRoute5: customRoutes[4],
-                c_height: canvas_height,
-                c_width: canvas_width,
-                image: canvas.toDataURL()
-            })
-            .then(()=>{
-                alert("Play saved successfully.");
-                //Here all created divs need to be cleared
-                loadPlaybook();
-            })
-            .catch((error)=>{
-                alert(error)
-            });
-        };
-        //Pre-load playbook
+
+        } else {
+            alert("No play found.")
+        }
+    }
+    )
+    .catch((error)=>{
+        alert(error)
+    })
+} 
+saveButton.addEventListener("click", function() {
+    storePlay();
+});
+let storePlay = function (){
+    let playName = document.querySelector("#playName").value;
+    set(ref(db, "Plays/" + playName),{
+        play: playName,
+        wr1: circles[0],
+        wr2: circles[1],
+        wr3: circles[2],
+        wr4: circles[3],
+        wr5: circles[4],
+        cRoute1: customRoutes[0],
+        cRoute2: customRoutes[1],
+        cRoute3: customRoutes[2],
+        cRoute4: customRoutes[3],
+        cRoute5: customRoutes[4],
+        c_height: canvas_height,
+        c_width: canvas_width,
+        image: canvas.toDataURL()
+    })
+    .then(()=>{
+        alert("Play saved successfully.");
+        //Here all created divs need to be cleared
         loadPlaybook();
+    })
+    .catch((error)=>{
+        alert(error)
+    });
+};
+//Pre-load playbook
+loadPlaybook();
 
-        // Popup
-        let popup = document.getElementById("popup");
-        function openPopup(){
-            popup.classList.add("open-popup");
-        }
-        let closePopup = function (){
-            popup.classList.remove("open-popup");
-        }
+// Playbook Popup
+let popup = document.getElementById("popup");
 
-        // Close popup by clicking div or X button
-        let closeButton = document.getElementById("close");
-        closeButton.addEventListener("click", function() {
-            closePopup()
-        })
-        
-        popup.addEventListener("click", function() {
-            closePopup()
-        })
+function openPopup(){
+    popup.classList.add("open-popup");
+}
+let closePopup = function (){
+    popup.classList.remove("open-popup");
+}
+
+let closeButton = document.getElementById("close");
+closeButton.addEventListener("click", function() {
+    closePopup()
+})
+
+popup.addEventListener("click", function() {
+    closePopup()
+})
+
+// Login Form Popup
+let loginForm = document.querySelector(".formPopup")
+let loginFormButton = document.querySelector("#logInForm");
+let formCloseButton = document.getElementById("formClose");
+let pwCheckbox = document.getElementById("showPW");
+
+function openLogInPopup(){
+    loginForm.classList.add("open-popup");
+}
+
+function closeFormPopup(){
+    loginForm.classList.remove("open-popup");
+}
+
+function pwReveal() {
+  var x = document.getElementById("userPassword");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
+loginFormButton.addEventListener("click", function()  {openLogInPopup()})
+formCloseButton.addEventListener("click", function() {closeFormPopup()})
+loginForm.addEventListener("click", function() {closeFormPopup()})
+pwCheckbox.addEventListener("click", function() {pwReveal()})
+
+
+// Signup Form Popup
+let signUpForm = document.querySelector(".signUpformPopup")
+let signUpFormButton = document.querySelector("#signUpForm");
+let signUpformCloseButton = document.getElementById("signUpFormClose");
+let pwCheckboxsu = document.getElementById("showPWsu");
+
+function opensignUpPopup(){
+    signUpForm.classList.add("open-popup");
+}
+
+function closesignUpFormPopup(){
+    signUpForm.classList.remove("open-popup");
+}
+
+function pwRevealsu() {
+  let x = document.getElementById("userPasswordsu");
+  let y = document.getElementById("userPasswordsu2");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+  if (y.type === "password") {
+    y.type = "text";
+  } else {
+    y.type = "password";
+  }
+}
+
+signUpFormButton.addEventListener("click", function()  {opensignUpPopup()})
+signUpformCloseButton.addEventListener("click", function() {closesignUpFormPopup()})
+signUpForm.addEventListener("click", function() {closesignUpFormPopup()})
+pwCheckboxsu.addEventListener("click", function() {pwRevealsu()})
+
+
+
+//Open playbook
+let loadButton = document.querySelector("#loadPlay");
+loadButton.addEventListener("click", function() {
+    openPopup();
+    let elements = document.getElementsByClassName("playList");
+    for (let i = 0; i < elements.length; i++){
+        let play = elements[i].getAttribute("playName")
+        elements[i].myParam = play;
+        elements[i].addEventListener('click', loadPlay, false);
+    }
+    })
+
+
+
+let loadPlay = function (evt){
+    let playName = evt.currentTarget.myParam;
+    const dbref = ref(db);
+    get(child(dbref, "Plays/" + playName))
+    .then((snapshot)=>{
+        if(snapshot.exists()) {
+            circles[0] = snapshot.val().wr1;
+            circles[1] = snapshot.val().wr2;
+            circles[2] = snapshot.val().wr3;
+            circles[3] = snapshot.val().wr4;
+            circles[4] = snapshot.val().wr5;
+            if (snapshot.val().cRoute1 == undefined){
+                customRoutes[0] = customRoutes[0]
+            } else {customRoutes[0] = snapshot.val().cRoute1};
+            if (snapshot.val().cRoute2 == undefined){
+                customRoutes[1] = customRoutes[1]
+            } else {customRoutes[1] = snapshot.val().cRoute2}
+            if (snapshot.val().cRoute3 == undefined){
+                customRoutes[2] = customRoutes[2]
+            } else {customRoutes[2] = snapshot.val().cRoute3}
+            if (snapshot.val().cRoute4 == undefined){
+                customRoutes[3] = customRoutes[3]
+            } else {customRoutes[3] = snapshot.val().cRoute4}
+            if (snapshot.val().cRoute5 == undefined){
+                customRoutes[4] = customRoutes[4]
+            } else {customRoutes[4] = snapshot.val().cRoute5}
+            let og_height = snapshot.val().c_height;
+            let og_width = snapshot.val().c_width;
+            c.clearRect(0, 0, canvas_width, canvas_height);
+            draw_playingfield();
+            let counter = 0;
+            for (let circle of circles) {
+                currentCircleIndex = counter;
+                selectedCircle = counter;
+                circle.x = circle.x/og_width*canvas_width;
+                circle.y = circle.y/og_height*canvas_height;
+                circle.width = circle.width/og_width*canvas_width;
+                circle.height = circle.height/og_height*canvas_height;
+                c.fillStyle = circle.color;
+                c.fillRect(circle.x, circle.y, circle.width, circle.height);
+                c.strokeStyle = 'black';
+                c.lineWidth = 4;
+                c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+                paths[counter] = new Path2D();
+                let savedRoute = circles[counter].assignedRoute;
+                let newRoute = new Function(savedRoute);
+                newRoute();
+                counter += 1
+            };
+        } else {
+            alert("No play found.")
+        }
+        closePopup();
+    }
+    )      
+    .catch((error)=>{
+        alert(error)
+    })
+
+}
+// Signout
+
+const loginuserEmail = document.querySelector("#userEmail");
+const loginuserPassword = document.querySelector("#userPassword");
+const signupuserEmail = document.querySelector("#userEmailsu");
+const signupuserPassword = document.querySelector("#userPasswordsu");
+const signupuserPassword2 = document.querySelector("#userPasswordsu2");
+const authForm = document.querySelector("#authForm")
+const signUpButton = document.querySelector("#signUp");
+const logInButton = document.querySelector("#logIn");
+const signOutButton = document.querySelector("#signOutForm");
+
+signOutButton.addEventListener("click", function() {signOutFunc()});
+signUpButton.addEventListener("click", function() {userSignUp()});
+logInButton.addEventListener("click",function () {userLogin()});
+
+const userSignUp = async() => {
     
-        //Open playbook
-        let loadButton = document.querySelector("#loadPlay");
-        loadButton.addEventListener("click", function() {
-            openPopup();
-            let elements = document.getElementsByClassName("playList");
-            for (let i = 0; i < elements.length; i++){
-                let play = elements[i].getAttribute("playName")
-                elements[i].myParam = play;
-                elements[i].addEventListener('click', loadPlay, false);
-            }
-            })
+    const signUpEmail = signupuserEmail.value;
+    const signUpPassword = signupuserPassword.value;
+    const signUpPassword2 = signupuserPassword2.value;
+    if (signUpPassword != signUpPassword2) {
+        alert("Passwords are not matching. Try again!");
+    } else {
+    createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
+    .then((userCredential) => {
+        const user = userCredential.user;
+        console.log(user);
+        alert("Your account has been created!");
+        document.getElementById("logInForm").style.display = "none";
+        document.getElementById("signUpForm").style.display = "none";
+        document.getElementById("signOutForm").style.display = "block"; 
 
-        let loadPlay = function (evt){
-            let playName = evt.currentTarget.myParam;
-            const dbref = ref(db);
-            get(child(dbref, "Plays/" + playName))
-            .then((snapshot)=>{
-                if(snapshot.exists()) {
-                    circles[0] = snapshot.val().wr1;
-                    circles[1] = snapshot.val().wr2;
-                    circles[2] = snapshot.val().wr3;
-                    circles[3] = snapshot.val().wr4;
-                    circles[4] = snapshot.val().wr5;
-                    if (snapshot.val().cRoute1 == undefined){
-                        customRoutes[0] = customRoutes[0]
-                    } else {customRoutes[0] = snapshot.val().cRoute1};
-                    if (snapshot.val().cRoute2 == undefined){
-                        customRoutes[1] = customRoutes[1]
-                    } else {customRoutes[1] = snapshot.val().cRoute2}
-                    if (snapshot.val().cRoute3 == undefined){
-                        customRoutes[2] = customRoutes[2]
-                    } else {customRoutes[2] = snapshot.val().cRoute3}
-                    if (snapshot.val().cRoute4 == undefined){
-                        customRoutes[3] = customRoutes[3]
-                    } else {customRoutes[3] = snapshot.val().cRoute4}
-                    if (snapshot.val().cRoute5 == undefined){
-                        customRoutes[4] = customRoutes[4]
-                    } else {customRoutes[4] = snapshot.val().cRoute5}
-                    let og_height = snapshot.val().c_height;
-                    let og_width = snapshot.val().c_width;
-                    c.clearRect(0, 0, canvas_width, canvas_height);
-                    draw_playingfield();
-                    let counter = 0;
-                    for (let circle of circles) {
-                        currentCircleIndex = counter;
-                        selectedCircle = counter;
-                        circle.x = circle.x/og_width*canvas_width;
-                        circle.y = circle.y/og_height*canvas_height;
-                        circle.width = circle.width/og_width*canvas_width;
-                        circle.height = circle.height/og_height*canvas_height;
-                        c.fillStyle = circle.color;
-                        c.fillRect(circle.x, circle.y, circle.width, circle.height);
-                        c.strokeStyle = 'black';
-                        c.lineWidth = 4;
-                        c.strokeRect(circle.x, circle.y, circle.width, circle.height);
-                        paths[counter] = new Path2D();
-                        let savedRoute = circles[counter].assignedRoute;
-                        let newRoute = new Function(savedRoute);
-                        newRoute();
-                        counter += 1
-                    };
-                } else {
-                    alert("No play found.")
-                }
-                closePopup();
-            }
-            )      
-            .catch((error)=>{
-                alert(error)
-            })
+    }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode + errorMessage)
+    })}
+    closesignUpFormPopup();
+}
 
+const userLogin = async() => {
+    
+    const loginEmail = loginuserEmail.value;
+    const loginPassword = loginuserPassword.value;
+    signInWithEmailAndPassword(auth, loginEmail, loginPassword)
+    .then((userCredential) => {
+        const user = userCredential.user;
+        alert("You have signed in successfully!");
+        document.getElementById("logInForm").style.display = "none";
+        document.getElementById("signUpForm").style.display = "none";
+        document.getElementById("signOutForm").style.display = "block"; 
+
+    }).catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        console.log(errorCode + errorMessage)
+    })
+    closeFormPopup();
+}
+
+const checkAuthState = async() => {
+    onAuthStateChanged(auth, user => {
+        if(user) {
+            document.getElementById("logInForm").style.display = "none";
+            document.getElementById("signUpForm").style.display = "none";
+            document.getElementById("signOutForm").style.display = "block"; 
         }
-        const userEmail = document.querySelector("#userEmail");
-        const userPassword = document.querySelector("#userPassword");
-        const authForm = document.querySelector("#authForm")
-        const signUpButton = document.querySelector("#signUp");
-        const logInButton = document.querySelector("#logIn");
-
-        const userSignUp = async() => {
-            const signUpEmail = userEmail.value;
-            const signUpPassword = userPassword.value;
-            createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                console.log(user);
-                alert("Your account has been created!");
-            }).catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode + errorMessage)
-            })
+        else{
+            alert("Not logged in!")
         }
-        signUpButton.addEventListener("click", userSignUp);
+    })
+}
+
+const signOutFunc = async() => {
+    await signOut(auth);
+    document.getElementById("logInForm").style.display = "block";
+    document.getElementById("signUpForm").style.display = "block";
+    document.getElementById("signOutForm").style.display = "none"; 
+}
+checkAuthState();
+
+
+
       </script>
 </body>
 </html>

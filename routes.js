@@ -6,6 +6,12 @@ document.querySelector("#clearCurrentRoute").addEventListener("click", function 
     clearCurrentRoute();
 });
 
+document.querySelector("#saveToPicture").addEventListener("click", function () {
+	setbackborder();
+    let image_data = canvas.toDataURL("image/png");
+	// Neues Fenster für die Bilddaten
+	window.open(image_data);});
+
 document.querySelector("#customRouteFinished").addEventListener("click", function () {
     drawArrow(rxfrom, ryfrom, rxto, ryto);
     customRoutes[selectedCircle].endX = rxto;
@@ -19,6 +25,14 @@ document.querySelector("#hotroute").addEventListener("click", function () {
     c.stroke(paths[selectedCircle]);
 });
 
+
+let openForm = function() {
+    document.getElementById("myForm").style.display = "block";
+  }
+  
+  function closeForm() {
+    document.getElementById("myForm").style.display = "none";
+  } 
 
 
 //Functions

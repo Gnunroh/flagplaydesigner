@@ -29,6 +29,11 @@
     padding-right: 2em;
 }
 
+#authForm {
+    display: flex;
+    flex-direction: row;
+}
+
 h1 {
     margin: 0px;
 }
@@ -47,6 +52,38 @@ h1 {
     transition: transform 0.4s, top 0.4s;
 }
 
+.formPopup {
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    text-align: center;
+    padding: 0 30px 30px;
+    color: #333;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+
+.signUpformPopup {
+    width: 100%;
+    background-color: rgba(0,0,0,.5);
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.1);
+    text-align: center;
+    padding: 0 30px 30px;
+    color: #333;
+    visibility: hidden;
+    transition: transform 0.4s, top 0.4s;
+}
+
+.signOut {
+    display:none;
+}
+
 .open-popup{
     visibility: visible;
     top: 50%;
@@ -55,16 +92,60 @@ h1 {
     overflow: auto;
 }
 
+
+
+.popupheader {
+    visibility: inherit;
+    border-top-left-radius: .75em;
+    border-top-right-radius: .75em;
+    top: 70%;
+    background-color: white;
+    opacity: 100%;
+    transform: translate(25%, 105%) scale(1);
+    height: 10%;
+    width:70%;
+    border-bottom: grey solid 2px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px 0 30px;
+}
+
 .gridcontainer{
     visibility: inherit;
-    border-radius: .75em;
+    border-bottom-left-radius: .75em;
+    border-bottom-right-radius: .75em;
     top: 50%;
     background-color: white;
     opacity: 100%;
-    transform: translate(25%, 25%) scale(1);
+    transform: translate(25%, 15%) scale(1);
     height: 70%;
     width:70%;
     overflow: auto;
+}
+
+.formgridcontainer{
+    visibility: inherit;
+    border-bottom-left-radius: .75em;
+    border-bottom-right-radius: .75em;
+    top: 50%;
+    background-color: white;
+    opacity: 100%;
+    transform: translate(115%, 15%) scale(1);
+    height: 70%;
+    width:30%;
+    overflow: auto;
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.formItems {
+    margin-top: 1em;
 }
 
 .buttoncontainer {
@@ -179,16 +260,10 @@ h3 {
     justify-content: center;
 }
 
-.popupheader {
-    height: 4em;
-    z-index: 1;
-    border-bottom: grey solid 2px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 2em;
-
-}
+#playContainer::after {
+    content: "";
+    flex: auto;
+  }
 
 #close {
     background-color: red;
@@ -197,6 +272,3 @@ h3 {
     height: 2em;
 }
 
-/* #simpleDownload {
-    align-self: center;
-} */
