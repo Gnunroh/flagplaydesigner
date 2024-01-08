@@ -11,9 +11,12 @@
 <body>
     <div class="navbar">
         <h1>FlagPlayDesigner</h1>
-        <div class = "signupcontainer">
-            <button id = "login">Log in</button>
-            <button id = "signup">Sign up for free</button>
+        <div class = "signupcontainer" id="authForm">
+            <input type="email" placeholder="email" id="userEmail">
+            <input type="password" placeholder="password" id="userPassword">
+            <button id = "logIn">Log in</button>
+            <button id = "signUp">Sign up for free</button>
+            <button id = "signOut">Log out</button>
         </div>
     </div>
     <div class="allcontent">
@@ -138,6 +141,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
         import { getDatabase, set, get, update, remove, ref, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         // TODO: Add SDKs for Firebase products that you want to use
         // https://firebase.google.com/docs/web/setup#available-libraries
       
@@ -159,6 +163,7 @@
         const app = initializeApp(firebaseConfig);
         const analytics = getAnalytics(app);
         const db = getDatabase();
+        const auth = getAuth(app);
 
         // //Save play
         let saveButton = document.querySelector("#savePlay");
@@ -326,7 +331,27 @@
             })
 
         }
+        const userEmail = document.querySelector("#userEmail");
+        const userPassword = document.querySelector("#userPassword");
+        const authForm = document.querySelector("#authForm")
+        const signUpButton = document.querySelector("#signUp");
+        const logInButton = document.querySelector("#logIn");
 
+        const userSignUp = async() => {
+            const signUpEmail = userEmail.value;
+            const signUpPassword = userPassword.value;
+            createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                console.log(user);
+                alert("Your account has been created!");
+            }).catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode + errorMessage)
+            })
+        }
+        signUpButton.addEventListener("click", userSignUp);
       </script>
 </body>
 </html>
