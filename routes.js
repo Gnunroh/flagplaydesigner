@@ -871,14 +871,6 @@ document.querySelector("#shootfake").addEventListener("click", function () {
     shootfake();
 });
 
-document.querySelector("#solidline").addEventListener("click", function () {
-    solidline();
-});
-
-document.querySelector("#dottedline").addEventListener("click", function () {
-    dottedline();
-});
-
 function drawArrow(fromx, fromy, tox, toy){
     let angle = Math.atan2(toy-fromy,tox-fromx);
     //variables to be used when creating the arrow
