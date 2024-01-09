@@ -201,12 +201,16 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const db = getDatabase();
 const auth = getAuth(app);
+let userId = "empty";
 
 // //Save play
 let saveButton = document.querySelector("#savePlay");
 let loadPlaybook = function (){
     const dbref = ref(db);
-    get(child(dbref, "Plays/"))
+    console.log(userId)
+    if(userId === "empty"){
+    console.log("Loading public playbook")
+    get(child(dbref, "Plays/Public/"))
     .then((snapshot)=>{
         if(snapshot.exists()) {
             let plays = snapshot.val();
@@ -243,13 +247,81 @@ let loadPlaybook = function (){
     .catch((error)=>{
         alert(error)
     })
+    } else {
+    get(child(dbref, "Plays/" + userId + "/"))
+    .then((snapshot)=>{
+        if(snapshot.exists()) {
+            let plays = snapshot.val();
+            let i = 0;
+            for (const [key, value] of Object.entries(plays)) {
+                let playImage = value.image;
+                let playName = value.play;
+                let mainDiv = document.getElementById("playContainer");
+                let playDiv = document.createElement("div");
+                playDiv.className="playList"
+                playDiv.setAttribute("id", `playTile${i}`);
+                playDiv.setAttribute("style", "cursor: pointer");
+                playDiv.setAttribute("playName", playName)
+                mainDiv.appendChild(playDiv);
+                
+                let img = new Image(200, 200);
+                img.src = playImage;
+                let src = document.getElementById(`playTile${i}`);
+                src.appendChild(img);
+                let title = document.createElement("p");
+                title.className = "playTitle"
+                let node = document.createTextNode(playName);
+                title.appendChild(node);
+                src.appendChild(title);
+                i += 1
+
+            }
+
+        } else {
+            alert("No play found.")
+        }
+    }
+    )
+    .catch((error)=>{
+        alert(error)
+    })
+    }
 } 
 saveButton.addEventListener("click", function() {
     storePlay();
 });
 let storePlay = function (){
     let playName = document.querySelector("#playName").value;
-    set(ref(db, "Plays/" + playName),{
+    console.log(userId)
+    if(userId === "empty"){
+        console.log("undefined uid")
+        set(ref(db, "Plays/Public/" + playName),{
+        play: playName,
+        wr1: circles[0],
+        wr2: circles[1],
+        wr3: circles[2],
+        wr4: circles[3],
+        wr5: circles[4],
+        cRoute1: customRoutes[0],
+        cRoute2: customRoutes[1],
+        cRoute3: customRoutes[2],
+        cRoute4: customRoutes[3],
+        cRoute5: customRoutes[4],
+        c_height: canvas_height,
+        c_width: canvas_width,
+        image: canvas.toDataURL()
+    })
+    .then(()=>{
+        alert("Play saved successfully.");
+        //Here all created divs need to be cleared
+        loadPlaybook();
+    })
+    .catch((error)=>{
+        alert(error)
+    }); 
+    } else {
+        console.log("defined uid")
+        set(ref(db, "Plays/" + userId + "/" + playName),{
         play: playName,
         wr1: circles[0],
         wr2: circles[1],
@@ -273,9 +345,9 @@ let storePlay = function (){
     .catch((error)=>{
         alert(error)
     });
+    }
 };
-//Pre-load playbook
-loadPlaybook();
+
 
 // Playbook Popup
 let popup = document.getElementById("popup");
@@ -378,7 +450,8 @@ loadButton.addEventListener("click", function() {
 let loadPlay = function (evt){
     let playName = evt.currentTarget.myParam;
     const dbref = ref(db);
-    get(child(dbref, "Plays/" + playName))
+    if(userId === "empty"){
+    get(child(dbref, "Plays/Public/" + playName))
     .then((snapshot)=>{
         if(snapshot.exists()) {
             circles[0] = snapshot.val().wr1;
@@ -433,6 +506,63 @@ let loadPlay = function (evt){
     .catch((error)=>{
         alert(error)
     })
+    } else {
+    get(child(dbref, "Plays/" + userId + "/" + playName))
+    .then((snapshot)=>{
+        if(snapshot.exists()) {
+            circles[0] = snapshot.val().wr1;
+            circles[1] = snapshot.val().wr2;
+            circles[2] = snapshot.val().wr3;
+            circles[3] = snapshot.val().wr4;
+            circles[4] = snapshot.val().wr5;
+            if (snapshot.val().cRoute1 == undefined){
+                customRoutes[0] = customRoutes[0]
+            } else {customRoutes[0] = snapshot.val().cRoute1};
+            if (snapshot.val().cRoute2 == undefined){
+                customRoutes[1] = customRoutes[1]
+            } else {customRoutes[1] = snapshot.val().cRoute2}
+            if (snapshot.val().cRoute3 == undefined){
+                customRoutes[2] = customRoutes[2]
+            } else {customRoutes[2] = snapshot.val().cRoute3}
+            if (snapshot.val().cRoute4 == undefined){
+                customRoutes[3] = customRoutes[3]
+            } else {customRoutes[3] = snapshot.val().cRoute4}
+            if (snapshot.val().cRoute5 == undefined){
+                customRoutes[4] = customRoutes[4]
+            } else {customRoutes[4] = snapshot.val().cRoute5}
+            let og_height = snapshot.val().c_height;
+            let og_width = snapshot.val().c_width;
+            c.clearRect(0, 0, canvas_width, canvas_height);
+            draw_playingfield();
+            let counter = 0;
+            for (let circle of circles) {
+                currentCircleIndex = counter;
+                selectedCircle = counter;
+                circle.x = circle.x/og_width*canvas_width;
+                circle.y = circle.y/og_height*canvas_height;
+                circle.width = circle.width/og_width*canvas_width;
+                circle.height = circle.height/og_height*canvas_height;
+                c.fillStyle = circle.color;
+                c.fillRect(circle.x, circle.y, circle.width, circle.height);
+                c.strokeStyle = 'black';
+                c.lineWidth = 4;
+                c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+                paths[counter] = new Path2D();
+                let savedRoute = circles[counter].assignedRoute;
+                let newRoute = new Function(savedRoute);
+                newRoute();
+                counter += 1
+            };
+        } else {
+            alert("No play found.")
+        }
+        closePopup();
+    }
+    )      
+    .catch((error)=>{
+        alert(error)
+    })
+    }
 
 }
 // Signout
@@ -483,7 +613,8 @@ const userLogin = async() => {
     signInWithEmailAndPassword(auth, loginEmail, loginPassword)
     .then((userCredential) => {
         const user = userCredential.user;
-        alert("You have signed in successfully!");
+        userId = user.uid;
+        console.log(userId);
         document.getElementById("logInForm").style.display = "none";
         document.getElementById("signUpForm").style.display = "none";
         document.getElementById("signOutForm").style.display = "block"; 
@@ -499,24 +630,36 @@ const userLogin = async() => {
 const checkAuthState = async() => {
     onAuthStateChanged(auth, user => {
         if(user) {
+            userId = user.uid;
+            console.log(userId);
             document.getElementById("logInForm").style.display = "none";
             document.getElementById("signUpForm").style.display = "none";
             document.getElementById("signOutForm").style.display = "block"; 
+            return userId;
         }
         else{
-            alert("Not logged in!")
+            console.log("Not logged in")
         }
     })
+    const dbref = ref(db);
+    get(child(dbref, "Plays/Public/"))
+    .then((snapshot)=>{
+        loadPlaybook();
+    }
+    )
 }
 
 const signOutFunc = async() => {
     await signOut(auth);
     document.getElementById("logInForm").style.display = "block";
     document.getElementById("signUpForm").style.display = "block";
-    document.getElementById("signOutForm").style.display = "none"; 
+    document.getElementById("signOutForm").style.display = "none";
+    userId = "empty";
+    return userId;
 }
 checkAuthState();
-
+//Pre-load playbook
+// loadPlaybook();
 
 
       </script>
