@@ -22,7 +22,7 @@
     <div class="maincontent">
         <div class="canvascontainer">
             <div class="leftside">
-                <div class="headlinecontainer"><h2>Basic Routes</h2></div>
+                <div class="headlinecontainermiddle"><h2>Basic Routes</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
                         <h3>In Routes</h3>
@@ -64,15 +64,13 @@
                     </div>
                 </div> 
                 <div class="spacer"></div>
-                <div class="headlinecontainer"><h2>Custom Route</h2></div>
+                <div class="headlinecontainer"><h2>Delete Routes</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
-                        <button id="customRouteFinished">Finish Route</button>
                         <button id="clearRoutes">Delete all routes</button>
                     </div>
                     <div class ="buttoncontainer">
-                        <button id="hotroute">Hot Route</button>
-                        <button id="clearCurrentRoute">Delete route</button>
+                        <button id="clearCurrentRoute">Delete current route</button>
                     </div>
                 </div>   
             </div>
@@ -84,44 +82,47 @@
                 </div>
             </div>
             <div class="rightside">
-                <div class="headlinecontainer"><h2>Formations</h2></div>
+                <div class="headlinecontainermiddle"><h2>Formations</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
                         <h3>Strong Left</h3>
-                        <button id="spreadleft">Spread Left</button>
-                        <button id="tightleft">Tight Left</button>
-                        <button id="bunchopenleft">Bunch Open Left</button>
-                        <button id="allbunchleft">All Bunch Left</button>
-                        <button id="tripsleft">Trips Left</button>
+                        <button class="formations" id="spreadleft">Spread Left</button>
+                        <button class="formations" id="tightleft">Tight Left</button>
+                        <button class="formations" id="bunchopenleft">Bunch Open Left</button>
+                        <button class="formations" id="allbunchleft">All Bunch Left</button>
+                        <button class="formations" id="tripsleft">Trips Left</button>
                     </div>
                     <div class ="buttoncontainer">
                         <h3>Strong Right</h3>
-                        <button id="spreadright">Spread Right</button>
-                        <button id="tightright">Tight Right</button>
-                        <button id="bunchopenright">Bunch Open Right</button>
-                        <button id="allbunchright">All Bunch Right</button>
-                        <button id="tripsright">Trips Right</button>
+                        <button class="formations" id="spreadright">Spread Right</button>
+                        <button class="formations" id="tightright">Tight Right</button>
+                        <button class="formations" id="bunchopenright">Bunch Open Right</button>
+                        <button class="formations" id="allbunchright">All Bunch Right</button>
+                        <button class="formations" id="tripsright">Trips Right</button>
                     </div>
                 </div>
-                <div class="headlinecontainer"><h2>Route Line Format</h2></div>
+                <div class="headlinecontainer"><h2>Custom Route</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
-                        <button id="solidline">Solid Line</button>
+                        <button id="customRouteFinished">Finish Route</button>
                     </div>
                     <div class ="buttoncontainer">
-                        <button id="dottedline">Dotted Line</button>
+                        <button id="hotroute">Hot Route</button>
                     </div>
-                </div>
-                <div class="headlinecontainer"><h2>Save & load plays</h2></div>
+                </div> 
+                <div class="headlinecontainer"><h2>Save play</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
-                        <input id="playName" type="text">
-                        <button id="savePlay" class="btn" >Save to playbook</button>    
+                        <input id="playName" type="text" placeholder="Enter playname">
+                        <button id="savePlay" class="btn" >Save to playbook</button> 
                     </div>
                     <div class ="buttoncontainer">
                         <button id="saveToPicture">Save as picture</button>
-                        <button id="loadPlay">Load play</button>
                     </div>
+                </div>
+                <div class="headlinecontainer"><h2>Load play</h2></div>
+                <div class="savebuttoncontainer">
+                        <button id="loadPlay">Load play from playbook</button>
                 </div>
             </div>
         </div>
@@ -207,7 +208,6 @@ let userId = "empty";
 let saveButton = document.querySelector("#savePlay");
 let loadPlaybook = function (){
     const dbref = ref(db);
-    console.log(userId)
     if(userId === "empty"){
     console.log("Loading public playbook")
     get(child(dbref, "Plays/Public/"))
@@ -248,6 +248,7 @@ let loadPlaybook = function (){
         alert(error)
     })
     } else {
+    console.log("Loading private playbook")
     get(child(dbref, "Plays/" + userId + "/"))
     .then((snapshot)=>{
         if(snapshot.exists()) {
@@ -294,7 +295,8 @@ let storePlay = function (){
     let playName = document.querySelector("#playName").value;
     console.log(userId)
     if(userId === "empty"){
-        console.log("undefined uid")
+        console.log("undefined uid");
+        setbackborder();
         set(ref(db, "Plays/Public/" + playName),{
         play: playName,
         wr1: circles[0],
@@ -313,7 +315,12 @@ let storePlay = function (){
     })
     .then(()=>{
         alert("Play saved successfully.");
-        //Here all created divs need to be cleared
+        let playTileContainer = document.querySelector("#playContainer");
+        playTileContainer.remove();
+        let gridParent = document.querySelector(".gridcontainer");
+        let newPlayTileContainer = document.createElement("div");
+        newPlayTileContainer.setAttribute("id", "playContainer");
+        gridParent.appendChild(newPlayTileContainer);
         loadPlaybook();
     })
     .catch((error)=>{
@@ -594,9 +601,7 @@ const userSignUp = async() => {
         const user = userCredential.user;
         console.log(user);
         alert("Your account has been created!");
-        document.getElementById("logInForm").style.display = "none";
-        document.getElementById("signUpForm").style.display = "none";
-        document.getElementById("signOutForm").style.display = "block"; 
+        checkAuthState();
 
     }).catch((error) => {
         const errorCode = error.code;
@@ -614,10 +619,10 @@ const userLogin = async() => {
     .then((userCredential) => {
         const user = userCredential.user;
         userId = user.uid;
-        console.log(userId);
         document.getElementById("logInForm").style.display = "none";
         document.getElementById("signUpForm").style.display = "none";
-        document.getElementById("signOutForm").style.display = "block"; 
+        document.getElementById("signOutForm").style.display = "block";
+        checkAuthState();
 
     }).catch((error) => {
         const errorCode = error.code;
@@ -627,18 +632,42 @@ const userLogin = async() => {
     closeFormPopup();
 }
 
+const signOutFunc = async() => {
+    await signOut(auth);
+    checkAuthState();
+}
+
 const checkAuthState = async() => {
     onAuthStateChanged(auth, user => {
         if(user) {
             userId = user.uid;
+            let userMail = user.email;
             console.log(userId);
             document.getElementById("logInForm").style.display = "none";
             document.getElementById("signUpForm").style.display = "none";
-            document.getElementById("signOutForm").style.display = "block"; 
-            return userId;
+            document.getElementById("signOutForm").style.display = "block";
+            document.getElementById("signedInText").innerText = "You are logged in as " + userMail;
+            document.getElementById("signedInText").style.display = "flex";
+            let playTileContainer = document.querySelector("#playContainer");
+            playTileContainer.remove();
+            let gridParent = document.querySelector(".gridcontainer");
+            let newPlayTileContainer = document.createElement("div");
+            newPlayTileContainer.setAttribute("id", "playContainer");
+            gridParent.appendChild(newPlayTileContainer);
         }
         else{
-            console.log("Not logged in")
+            console.log("Not logged in");
+            userId = "empty";
+            document.getElementById("logInForm").style.display = "block";
+            document.getElementById("signUpForm").style.display = "block";
+            document.getElementById("signOutForm").style.display = "none";
+            document.getElementById("signedInText").style.display = "none";
+            let playTileContainer = document.querySelector("#playContainer");
+            playTileContainer.remove();
+            let gridParent = document.querySelector(".gridcontainer");
+            let newPlayTileContainer = document.createElement("div");
+            newPlayTileContainer.setAttribute("id", "playContainer");
+            gridParent.appendChild(newPlayTileContainer);
         }
     })
     const dbref = ref(db);
@@ -649,17 +678,7 @@ const checkAuthState = async() => {
     )
 }
 
-const signOutFunc = async() => {
-    await signOut(auth);
-    document.getElementById("logInForm").style.display = "block";
-    document.getElementById("signUpForm").style.display = "block";
-    document.getElementById("signOutForm").style.display = "none";
-    userId = "empty";
-    return userId;
-}
 checkAuthState();
-//Pre-load playbook
-// loadPlaybook();
 
 
       </script>
