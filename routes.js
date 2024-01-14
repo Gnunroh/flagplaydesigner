@@ -93,6 +93,7 @@ let clearCurrentRoute = function() {
         } else {
         paths[i] = new Path2D();
         circles[i].assignedRoute = null;
+        circles[i].hotRoute = 'no';
         customRoutes[i].x = [];
         customRoutes[i].y = [];
         customRoutes[i].endX = null;

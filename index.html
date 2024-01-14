@@ -113,7 +113,7 @@
                 <div class="headlinecontainer"><h2>Save play</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
-                        <input id="playName" type="text" placeholder="Enter playname">
+                        <input id="playTitle" type="text" placeholder="Enter playname">
                         <select name="formations" id="formationSave">
                             <option value="" disabled selected>Select formation</option>
                             <option value="spread">Spread</option>
@@ -158,7 +158,7 @@
                 <h1 class="formItems">Login</h1>
             
                 <label class="formItems" for="email"><b>Email</b></label>
-                <input class="formItems"type="email" placeholder="email" id="userEmail">
+                <input class="formItems" type="email" placeholder="email" id="userEmail">
                 
                 <label class="formItems"for="psw"><b>Password</b></label>
                 <input class="formItems"type="password" placeholder="password" id="userPassword">
@@ -306,7 +306,7 @@ let storePlaySubFunction = function (dbName, playTitle){
 };
 
 let storePlay = function (){
-    let playName = document.querySelector("#playName").value;
+    let playName = document.querySelector("#playTitle").value;
     if(userId === "empty"){
         let dbName = "Plays/Public/" + playName;
         storePlaySubFunction(dbName, playName);
@@ -355,7 +355,7 @@ let loadPlaySubFunction = function (dbref, dbName){
             let playName = snapshot.val().play;
             let playFormation = snapshot.val().formation;
             let playDescription = snapshot.val().description;
-            document.getElementById("playName").value = playName;
+            document.getElementById("playTitle").value = playName;
             if (playDescription != undefined){
                 document.getElementById("playDescription").innerText = playDescription;
             }
