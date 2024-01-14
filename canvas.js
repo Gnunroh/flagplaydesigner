@@ -38,8 +38,6 @@ function drawArrow(fromx, fromy, tox, toy){
     paths[selectedCircle].lineTo(tox-headlen*Math.cos(angle-Math.PI/7),toy-headlen*Math.sin(angle-Math.PI/7));
 }
 
-
-
 class Circle {
     constructor(xpoint, ypoint, radius, color) {
         this.xpoint = xpoint;
@@ -61,20 +59,22 @@ let circles = [];
 let squares = [];
 let routewidth = 15;
 let routestyle = "solid";
-let currentCircleIndex = null; //null
+let currentCircleIndex = 0; //null
 let isDragging = false;
 let isSelected = false;
 let isExisting = false;
+let formationChange = false;
+let prevSelectedCircle = 0;
 let selectedCircle = 0;
 let startX;
 let startY;
 
-circles.push({x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black', assignedRoute:null});
-circles.push({x: canvas_width * 0.65, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
-circles.push({x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
-circles.push({x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
-circles.push({x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black',assignedRoute:null});
-
+circles.push({x: canvas_width * 0.13, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black', hotRoute:'no', assignedRoute:null});
+circles.push({x: canvas_width * 0.325, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black', hotRoute:'no', assignedRoute:null});
+circles.push({x: canvas_width * 0.525, y: canvas_height * 0.82, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'darkred', hotRoute:'no', assignedRoute:null});
+circles.push({x: canvas_width * 0.525, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'orange', hotRoute:'no', assignedRoute:null});
+circles.push({x: canvas_width * 0.8, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black', hotRoute:'no', assignedRoute:null});
+// circles[2] = QB circles[3] = Center
 
 let path1 = new Path2D();
 let path2 = new Path2D();
@@ -124,18 +124,22 @@ let isMouseInCircle = function(x, y, circle) {
 
 let mouseDown = function(event) {
     event.preventDefault();
-
     startX = parseInt(event.clientX) - canvasLeft;
     startY = parseInt(event.clientY) - canvasTop;
-
     let index = 0;
     circles[0].color = 'black';
     circles[1].color = 'black';
-    circles[2].color = 'black';
-    circles[3].color = 'black';
+    circles[2].color = 'darkred';
+    circles[3].color = 'orange';
     circles[4].color = 'black';
+    let i2 = 0;
     for (let circle of circles) {
-        c.strokeStyle = 'black';
+        if (i2 == 2){
+            c.strokeStyle = 'darkred'
+        } else if (i2 == 3) {
+            c.strokeStyle = 'orange'
+        } else {c.strokeStyle = 'black'}
+        i2 += 1;
         c.lineWidth = 4;
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
@@ -152,11 +156,15 @@ let mouseDown = function(event) {
             return;
         } else {
             currentCircleIndex = index;
-            circles[index].color = 'black';
+            if (index == 2){
+                circles[index].color = 'darkred'
+            } else if (index == 3) {
+                circles[index].color = 'orange'
+            } else {circles[index].color = 'black'}
+            i2 += 1;
         }
         index++;
     }
-    
     if ((!isMouseInCircle(startX, startY, circles[selectedCircle]) && isSelected == true && isExisting == false)){
         rxfrom = circles[selectedCircle].x + circles[selectedCircle].width/2;
         ryfrom = circles[selectedCircle].y + 5;
@@ -193,7 +201,6 @@ let mouseUp = function(event) {
     if (!isDragging) {
         return;
     }
-    
     event.preventDefault();
     isDragging = false;
     isExisting = false;
@@ -203,7 +210,6 @@ let mouseOut = function(event){
     if (!isDragging) {
         return;
     }
-
     event.preventDefault();
     isDragging = false;
 }
@@ -269,64 +275,76 @@ let draw_playingfield = function () {
 let draw_circles = function() {
     c.clearRect(0, 0, canvas_width, canvas_height);
     draw_playingfield();
+    let i2 = 0;
     for (let circle of circles) {
+        if (i2 == selectedCircle){
+            c.strokeStyle = 'red';
+        } else if (i2 == 2){
+            c.strokeStyle = 'darkred';
+            circle.color = 'darkred';
+        } else if (i2 == 3) {
+            circle.color = 'orange';
+            c.strokeStyle = 'orange';
+        } else {c.strokeStyle = 'black'}
+        i2 += 1;
         c.fillStyle = circle.color;
         c.fillRect(circle.x, circle.y, circle.width, circle.height);
-        c.strokeStyle = 'black';
         c.lineWidth = 4;
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
     for (let i = 0; i < paths.length; i++) {
         if (paths[i] != paths[currentCircleIndex]) {
             c.lineWidth = routewidth;
-            c.strokeStyle = 'black';
+            if (circles[i].hotRoute == 'yes'){
+                c.strokeStyle = 'red'
+            } else {c.strokeStyle = 'black'}
             c.stroke(paths[i]);
         };
         if(currentCircleIndex != null){
             paths[currentCircleIndex] = new Path2D();
             let savedRoute = circles[currentCircleIndex].assignedRoute;
             let newRoute = new Function(savedRoute);
+            if (circles[currentCircleIndex].hotRoute == 'yes'){
+                c.strokeStyle = 'red'
+            } else {c.strokeStyle = 'black'}
             newRoute();
         }
     };
 }
 
+// function draw(){
 
+//     c.clearRect(0,0,canvas.width,canvas.height);
+//     c.clearPath
+//     for(p=0;p<paths.length;p++){
 
+//         // get a path definition
+//         let path=paths[p];
+//         // beginPath
+//         c.beginPath();
 
-function draw(){
+//         // move to the beginning point of this path
+//         c.moveTo(path.points[0].x,path.points[0].y);
 
-    c.clearRect(0,0,canvas.width,canvas.height);
-    c.clearPath
-    for(p=0;p<paths.length;p++){
+//         // draw lines to each point on the path
+//         for(pt=1;pt<path.points.length;pt++){
+//             let point=path.points[pt];
+//             c.lineTo(point.x,point.y);
+//         }
 
-        // get a path definition
-        let path=paths[p];
-        // beginPath
-        c.beginPath();
+//         // set the path styles (color & linewidth)
+//         c.strokeStyle = 'black';
+//         c.lineWidth= routewidth;
+//         if (routestyle == "dotted") {
+//             c.setLineDash([5, 15])
+//         };
 
-        // move to the beginning point of this path
-        c.moveTo(path.points[0].x,path.points[0].y);
+//         // stroke this path
+//         c.stroke();
 
-        // draw lines to each point on the path
-        for(pt=1;pt<path.points.length;pt++){
-            let point=path.points[pt];
-            c.lineTo(point.x,point.y);
-        }
+//     }
 
-        // set the path styles (color & linewidth)
-        c.strokeStyle = 'black';
-        c.lineWidth= routewidth;
-        if (routestyle == "dotted") {
-            c.setLineDash([5, 15])
-        };
-
-        // stroke this path
-        c.stroke();
-
-    }
-
-}
+// }
 
 draw_circles();
 canvas.onmousedown = mouseDown;

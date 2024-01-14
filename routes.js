@@ -21,10 +21,10 @@ document.querySelector("#customRouteFinished").addEventListener("click", functio
 });
 
 document.querySelector("#hotroute").addEventListener("click", function () {
+    circles[selectedCircle].hotRoute = "yes";
     c.strokeStyle = 'red';
     c.stroke(paths[selectedCircle]);
 });
-
 
 let openForm = function() {
     document.getElementById("myForm").style.display = "block";
@@ -33,7 +33,6 @@ let openForm = function() {
   function closeForm() {
     document.getElementById("myForm").style.display = "none";
   } 
-
 
 //Functions
 
@@ -53,11 +52,14 @@ let setbackborder = function() {
         c.lineWidth = 4;
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
+    c.fillStyle='darkred';
+    c.strokeStyle='darkred';
+    c.fillRect(circles[2].x,circles[2].y, circles[2].width, circles[2].height);
+    c.strokeRect(circles[2].x,circles[2].y, circles[2].width, circles[2].height);
     c.fillStyle='orange';
     c.strokeStyle='orange';
     c.fillRect(circles[3].x,circles[3].y, circles[3].width, circles[3].height);
     c.strokeRect(circles[3].x,circles[3].y, circles[3].width, circles[3].height);
-
 };
 
 let clearRoutes = function() {
@@ -65,6 +67,7 @@ let clearRoutes = function() {
     for (let i = 0; i < paths.length; i++) {
         paths[i] = new Path2D();
         circles[i].assignedRoute = null;
+        circles[i].hotRoute = 'no';
         customRoutes = [];
         customRoutes.push({x: [], y: [], endX: null, endY: null});
         customRoutes.push({x: [], y: [], endX: null, endY: null});
@@ -76,7 +79,7 @@ let clearRoutes = function() {
     for (let circle of circles) {
         c.fillStyle = circle.color;
         c.fillRect(circle.x, circle.y, circle.width, circle.height);
-        c.strokeStyle = 'black';
+        c.strokeStyle = circle.color;
         c.lineWidth = 4;
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
@@ -86,7 +89,6 @@ let clearCurrentRoute = function() {
     c.clearRect(0, 0, canvas_width, canvas_height);
     for (let i = 0; i < paths.length; i++) {
         if (i != selectedCircle) {
-            console.log("Identified")
             continue
         } else {
         paths[i] = new Path2D();
@@ -106,49 +108,34 @@ let clearCurrentRoute = function() {
         c.strokeRect(circle.x, circle.y, circle.width, circle.height);
     };
     draw_circles();
-    // draw_playingfield();
-    // let i = 0;
-    // for (let circle of circles) {
-    //     // circle.x = circle.x/og_width*canvas_width;
-    //     // circle.y = circle.y/og_height*canvas_height;
-    //     // circle.width = circle.width/og_width*canvas_width;
-    //     // circle.height = circle.height/og_height*canvas_height;
-    //     c.fillStyle = circle.color;
-    //     c.fillRect(circle.x, circle.y, circle.width, circle.height);
-    //     c.strokeStyle = 'black';
-    //     c.lineWidth = 4;
-    //     c.strokeRect(circle.x, circle.y, circle.width, circle.height);
-    //     if (i == selectedCircle) {
-    //         console.log("Match identified")
-    //         paths[i] = new Path2D();
-    //         circle.assignedRoute = null;
+};
 
-    //     } else {
-    //         paths[i] = new Path2D();
-    //         let savedRoute = circle.assignedRoute;
-    //         let newRoute = new Function(savedRoute);
-    //         newRoute();
-            
-    //     }
-    //     i += 1
-    
-
-    // };
-}
-    // for (let i = 0; i < paths.length; i++) {
-    //     console.log(selectedCircle)
-
-    // drawRoute();
-    // for (let circle of circles) {
-    //     c.fillStyle = circle.color;
-    //     c.fillRect(circle.x, circle.y, circle.width, circle.height);
-    //     c.strokeStyle = 'black';
-    //     c.lineWidth = 4;
-    //     c.strokeRect(circle.x, circle.y, circle.width, circle.height);
-    // };
-
-
-
+let clearRoutesFormations = function() {
+    c.clearRect(0, 0, canvas_width, canvas_height);
+    draw_playingfield();
+    let counter = 0;
+    for (let circle of circles) {
+        c.fillStyle = circle.color;
+        c.fillRect(circle.x, circle.y, circle.width, circle.height);
+        if(counter == selectedCircle){
+            c.strokeStyle = 'red';
+        } else {
+            c.strokeStyle = circle.color;
+        }
+        c.lineWidth = 4;
+        c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+        if (circle.hotRoute == 'yes'){
+            c.strokeStyle = 'red'
+        } else {c.strokeStyle = 'black'}
+        selectedCircle = counter;
+        currentCircleIndex = counter;
+        paths[counter] = new Path2D();
+        let savedRoute = circles[counter].assignedRoute;
+        let newRoute = new Function(savedRoute);
+        newRoute();
+        counter += 1
+    };
+};
 
 let customRouteDraw = function() {
     firstX = circles[selectedCircle].x + circles[selectedCircle].width/2;
@@ -198,14 +185,16 @@ let twelveyardbreak = function() {
 let drawRoute = function () {
     c.lineWidth = routewidth;
     c.setLineDash([]);
-    c.strokeStyle = 'black';
+    if (circles[selectedCircle].hotRoute == 'yes'){
+        c.strokeStyle = 'red'
+    } else {c.strokeStyle = 'black'};
     c.stroke(paths[selectedCircle]);
-    if (routestyle == "dotted") {
-        c.setLineDash([10, 30]);
-        c.strokeStyle = 'white';
-        c.stroke(paths[selectedCircle]);
-    };
-    isExisting = true;
+    // if (routestyle == "dotted") {
+    //     c.setLineDash([10, 30]);
+    //     c.strokeStyle = 'white';
+    //     c.stroke(paths[selectedCircle]);
+    // };
+    // isExisting = true;
     return paths[selectedCircle];
 };
 
@@ -895,95 +884,194 @@ function drawArrow(fromx, fromy, tox, toy){
 // FORMATIONS -------------------------------------------------------------------------------------------------------------------------------------------
 
 let spreadleft = function() {
-    circles[0] = {x: canvas_width * 0.13, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.30, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.80, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.13;
+    circles[0].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.325;
+    circles[1].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.525;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.525;
+    circles[3].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.80;
+    circles[4].y = canvas_height * 0.7;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let spreadright= function() {
-    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.65, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
-};
-
-let tightright= function() {
-    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[4].x = canvas_width * 0.15;
+    circles[4].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.65;
+    circles[1].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.475;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.475;
+    circles[3].y = canvas_height * 0.7;
+    circles[0].x = canvas_width * 0.82;
+    circles[0].y = canvas_height * 0.7;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let tightleft= function() {
-    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.82, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.15;
+    circles[0].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.45;
+    circles[1].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.525;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.525;
+    circles[3].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.82;
+    circles[4].y = canvas_height * 0.7;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
+};
+
+let tightright= function() {
+    let standardWidth = canvas_width * 0.05;
+    circles[4].x = canvas_width * 0.15;
+    circles[4].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.55;
+    circles[1].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.475;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.475;
+    circles[3].y = canvas_height * 0.7;
+    circles[0].x = canvas_width * 0.82;
+    circles[0].y = canvas_height * 0.7;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let bunchopenleft= function() {
-    circles[0] = {x: canvas_width * 0.15, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.15;
+    circles[0].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.45;
+    circles[1].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.525;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.525;
+    circles[3].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.6;
+    circles[4].y = canvas_height * 0.71;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let bunchopenright= function() {
-    circles[0] = {x: canvas_width * 0.83, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
-};
-
-let allbunchright= function() {
-    circles[0] = {x: canvas_width * 0.625, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.83;
+    circles[0].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.4;
+    circles[4].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.475;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.475;
+    circles[3].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.55;
+    circles[1].y = canvas_height * 0.71;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let allbunchleft= function() {
-    circles[0] = {x: canvas_width * 0.325, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.375;
+    circles[0].y = canvas_height * 0.71;
+    circles[1].x = canvas_width * 0.45;
+    circles[1].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.525;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.525;
+    circles[3].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.6;
+    circles[4].y = canvas_height * 0.71;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
+};
+
+let allbunchright= function() {
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.625;
+    circles[0].y = canvas_height * 0.71;
+    circles[4].x = canvas_width * 0.4;
+    circles[4].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.475;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.475;
+    circles[3].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.55;
+    circles[1].y = canvas_height * 0.71;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let tripsleft= function() {
-    circles[0] = {x: canvas_width * 0.1, y: canvas_height * 0.70, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.4, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.25, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.1;
+    circles[0].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.45;
+    circles[4].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.525;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.525;
+    circles[3].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.275;
+    circles[1].y = canvas_height * 0.71;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
 
 let tripsright= function() {
-    circles[0] = {x: canvas_width * 0.875, y: canvas_height * 0.70, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[1] = {x: canvas_width * 0.55, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[2] = {x: canvas_width * 0.475, y: canvas_height * 0.9, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[3] = {x: canvas_width * 0.475, y: canvas_height * 0.7, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    circles[4] = {x: canvas_width * 0.7, y: canvas_height * 0.71, width: canvas_width * 0.05, height: canvas_width * 0.05, color:'black'};
-    clearRoutes();
+    let standardWidth = canvas_width * 0.05;
+    circles[0].x = canvas_width * 0.875;
+    circles[0].y = canvas_height * 0.7;
+    circles[4].x = canvas_width * 0.55;
+    circles[4].y = canvas_height * 0.71;
+    circles[2].x = canvas_width * 0.475;
+    circles[2].y = canvas_height * 0.82;
+    circles[3].x = canvas_width * 0.475;
+    circles[3].y = canvas_height * 0.7;
+    circles[1].x = canvas_width * 0.7;
+    circles[1].y = canvas_height * 0.71;
+    for (let circle of circles){
+        circle.width = standardWidth;
+        circle.height = standardWidth;
+    }
+    clearRoutesFormations();
 };
-
 
 document.querySelector("#spreadleft").addEventListener("click", function () {
     spreadleft();

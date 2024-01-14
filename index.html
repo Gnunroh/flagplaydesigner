@@ -67,10 +67,10 @@
                 <div class="headlinecontainer"><h2>Delete Routes</h2></div>
                 <div class="routebuttoncontainer">
                     <div class ="buttoncontainer">
-                        <button id="clearRoutes">Delete all routes</button>
+                        <button id="clearCurrentRoute">Delete current route</button>
                     </div>
                     <div class ="buttoncontainer">
-                        <button id="clearCurrentRoute">Delete current route</button>
+                        <button id="clearRoutes">Delete all routes</button>
                     </div>
                 </div>   
             </div>
@@ -190,7 +190,7 @@
     </div>
 </div> 
     <script type="module">
-// Firebase initialization -------------------------------------------------------------------------
+// Firebase initialization -----------------------------------------------------------------------------------------------------------------------------------------
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-analytics.js";
 import { getDatabase, set, get, update, remove, ref, child } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
@@ -213,7 +213,7 @@ const db = getDatabase();
 const auth = getAuth(app);
 let userId = "empty";
 
-// Load playbook ------------------------------------------------------------------------------------------
+// Load playbook -----------------------------------------------------------------------------------------------------------------------------------------------------------
 let loadPlaybookSubFunction = function (dbref, dbName){
     get(child(dbref, dbName))
     .then((snapshot)=>{
@@ -230,7 +230,6 @@ let loadPlaybookSubFunction = function (dbref, dbName){
                 playDiv.setAttribute("style", "cursor: pointer");
                 playDiv.setAttribute("playName", playName)
                 mainDiv.appendChild(playDiv);
-                
                 let img = new Image(200, 200);
                 img.src = playImage;
                 let src = document.getElementById(`playTile${i}`);
@@ -264,7 +263,7 @@ let loadPlaybook = function (){
     }
 }
 
-// Save to playbook -----------------------------------------------------------------------------------------
+// Save to playbook ------------------------------------------------------------------------------------------------------------------------
 let saveButton = document.querySelector("#savePlay");
 saveButton.addEventListener("click", function() {
     storePlay();
@@ -273,6 +272,8 @@ let storePlaySubFunction = function (dbName, playTitle){
     setbackborder();
     set(ref(db, dbName),{
     play: playTitle,
+    formation: document.querySelector("#formationSave").value,
+    description: document.querySelector("#playDescription").value,
     wr1: circles[0],
     wr2: circles[1],
     wr3: circles[2],
@@ -304,23 +305,113 @@ let storePlaySubFunction = function (dbName, playTitle){
 
 let storePlay = function (){
     let playName = document.querySelector("#playName").value;
-    console.log(userId)
     if(userId === "empty"){
-        console.log("undefined uid");
         let dbName = "Plays/Public/" + playName;
         storePlaySubFunction(dbName, playName);
     } else {
-        console.log("defined uid");
         let dbName = "Plays/" + userId + "/" + playName;
         storePlaySubFunction(dbName, playName);
     };
 };
 
+//Load play -----------------------------------------------------
+let loadButton = document.querySelector("#loadPlay");
+loadButton.addEventListener("click", function() {
+    openPopup();
+    let elements = document.getElementsByClassName("playList");
+    for (let i = 0; i < elements.length; i++){
+        let play = elements[i].getAttribute("playName")
+        elements[i].myParam = play;
+        elements[i].addEventListener('click', loadPlay, false);
+    }
+    });
 
+let loadPlaySubFunction = function (dbref, dbName){
+    get(child(dbref, dbName))
+    .then((snapshot)=>{
+        if(snapshot.exists()) {
+            circles[0] = snapshot.val().wr1;
+            circles[1] = snapshot.val().wr2;
+            circles[2] = snapshot.val().wr3;
+            circles[3] = snapshot.val().wr4;
+            circles[4] = snapshot.val().wr5;
+            if (snapshot.val().cRoute1 == undefined){
+                customRoutes[0] = customRoutes[0]
+            } else {customRoutes[0] = snapshot.val().cRoute1};
+            if (snapshot.val().cRoute2 == undefined){
+                customRoutes[1] = customRoutes[1]
+            } else {customRoutes[1] = snapshot.val().cRoute2}
+            if (snapshot.val().cRoute3 == undefined){
+                customRoutes[2] = customRoutes[2]
+            } else {customRoutes[2] = snapshot.val().cRoute3}
+            if (snapshot.val().cRoute4 == undefined){
+                customRoutes[3] = customRoutes[3]
+            } else {customRoutes[3] = snapshot.val().cRoute4}
+            if (snapshot.val().cRoute5 == undefined){
+                customRoutes[4] = customRoutes[4]
+            } else {customRoutes[4] = snapshot.val().cRoute5}
+            let playName = snapshot.val().play;
+            let playFormation = snapshot.val().formation;
+            let playDescription = snapshot.val().description;
+            document.getElementById("playName").value = playName;
+            if (playDescription != undefined){
+                document.getElementById("playDescription").innerText = playDescription;
+            }
+            if (playFormation != undefined){
+                document.getElementById("formationSave").value = playFormation;
+            }
+            let og_height = snapshot.val().c_height;
+            let og_width = snapshot.val().c_width;
+            c.clearRect(0, 0, canvas_width, canvas_height);
+            draw_playingfield();
+            let counter = 0;
+            for (let circle of circles) {
+                currentCircleIndex = counter;
+                selectedCircle = counter;
+                circle.x = circle.x/og_width*canvas_width;
+                circle.y = circle.y/og_height*canvas_height;
+                circle.width = circle.width/og_width*canvas_width;
+                circle.height = circle.height/og_height*canvas_height;
+                c.fillStyle = circle.color;
+                c.fillRect(circle.x, circle.y, circle.width, circle.height);
+                c.strokeStyle = circle.color;
+                c.lineWidth = 4;
+                c.strokeRect(circle.x, circle.y, circle.width, circle.height);
+                paths[counter] = new Path2D();
+                let savedRoute = circles[counter].assignedRoute;
+                let newRoute = new Function(savedRoute);
+                if (circle.hotRoute == 'yes'){
+                    c.strokeStyle = 'red'
+                } else {c.strokeStyle = 'black'}
+                newRoute();
+                counter += 1
+            };
+        } else {
+            alert("No play found.")
+        }
+        closePopup();
+    }
+    )      
+    .catch((error)=>{
+        alert(error)
+    });
+};
 
+let loadPlay = function (evt){
+    let playName = evt.currentTarget.myParam;
+    const dbref = ref(db);
+    if(userId === "empty"){
+        let dbName = "Plays/Public/" + playName;
+        loadPlaySubFunction(dbref, dbName);
+    } else {
+        let dbName = "Plays/" + userId + "/" + playName;
+        loadPlaySubFunction(dbref, dbName);
+    }
+}
 
+// POPUPS ----------------------------------------------------------------------------------------------------------------------------------------
 
-// Playbook Popup -------------------------------------------------------------------------------------
+// Playbook Popup -----------------------------------------------------------------------------------------------------------------------------
 let popup = document.getElementById("popup");
 
 function openPopup(){
@@ -361,89 +452,6 @@ function pwReveal() {
     x.type = "password";
   }
 }
-
-//Load play -----------------------------------------------------
-let loadButton = document.querySelector("#loadPlay");
-loadButton.addEventListener("click", function() {
-    openPopup();
-    let elements = document.getElementsByClassName("playList");
-    for (let i = 0; i < elements.length; i++){
-        let play = elements[i].getAttribute("playName")
-        elements[i].myParam = play;
-        elements[i].addEventListener('click', loadPlay, false);
-    }
-    });
-
-let loadPlaySubFunction = function (dbref, dbName){
-    get(child(dbref, dbName))
-    .then((snapshot)=>{
-        if(snapshot.exists()) {
-            circles[0] = snapshot.val().wr1;
-            circles[1] = snapshot.val().wr2;
-            circles[2] = snapshot.val().wr3;
-            circles[3] = snapshot.val().wr4;
-            circles[4] = snapshot.val().wr5;
-            if (snapshot.val().cRoute1 == undefined){
-                customRoutes[0] = customRoutes[0]
-            } else {customRoutes[0] = snapshot.val().cRoute1};
-            if (snapshot.val().cRoute2 == undefined){
-                customRoutes[1] = customRoutes[1]
-            } else {customRoutes[1] = snapshot.val().cRoute2}
-            if (snapshot.val().cRoute3 == undefined){
-                customRoutes[2] = customRoutes[2]
-            } else {customRoutes[2] = snapshot.val().cRoute3}
-            if (snapshot.val().cRoute4 == undefined){
-                customRoutes[3] = customRoutes[3]
-            } else {customRoutes[3] = snapshot.val().cRoute4}
-            if (snapshot.val().cRoute5 == undefined){
-                customRoutes[4] = customRoutes[4]
-            } else {customRoutes[4] = snapshot.val().cRoute5}
-            let og_height = snapshot.val().c_height;
-            let og_width = snapshot.val().c_width;
-            c.clearRect(0, 0, canvas_width, canvas_height);
-            draw_playingfield();
-            let counter = 0;
-            for (let circle of circles) {
-                currentCircleIndex = counter;
-                selectedCircle = counter;
-                circle.x = circle.x/og_width*canvas_width;
-                circle.y = circle.y/og_height*canvas_height;
-                circle.width = circle.width/og_width*canvas_width;
-                circle.height = circle.height/og_height*canvas_height;
-                c.fillStyle = circle.color;
-                c.fillRect(circle.x, circle.y, circle.width, circle.height);
-                c.strokeStyle = 'black';
-                c.lineWidth = 4;
-                c.strokeRect(circle.x, circle.y, circle.width, circle.height);
-                paths[counter] = new Path2D();
-                let savedRoute = circles[counter].assignedRoute;
-                let newRoute = new Function(savedRoute);
-                newRoute();
-                counter += 1
-            };
-        } else {
-            alert("No play found.")
-        }
-        closePopup();
-    }
-    )      
-    .catch((error)=>{
-        alert(error)
-    });
-};
-
-let loadPlay = function (evt){
-    let playName = evt.currentTarget.myParam;
-    const dbref = ref(db);
-    if(userId === "empty"){
-        let dbName = "Plays/Public/" + playName;
-        loadPlaySubFunction(dbref, dbName);
-    } else {
-        let dbName = "Plays/" + userId + "/" + playName;
-        loadPlaySubFunction(dbref, dbName);
-    }
-}
-
 
 // Signup Form Popup
 loginFormButton.addEventListener("click", function()  {openLogInPopup()})
@@ -511,7 +519,6 @@ const userSignUp = async() => {
     createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)
     .then((userCredential) => {
         const user = userCredential.user;
-        console.log(user);
         alert("Your account has been created!");
         checkAuthState();
 
@@ -551,7 +558,6 @@ const checkAuthState = async() => {
         if(user) {
             userId = user.uid;
             let userMail = user.email;
-            console.log(userId);
             document.getElementById("logInForm").style.display = "none";
             document.getElementById("signUpForm").style.display = "none";
             document.getElementById("signOutForm").style.display = "block";
@@ -565,7 +571,6 @@ const checkAuthState = async() => {
             gridParent.appendChild(newPlayTileContainer);
         }
         else{
-            console.log("Not logged in");
             userId = "empty";
             document.getElementById("logInForm").style.display = "block";
             document.getElementById("signUpForm").style.display = "block";

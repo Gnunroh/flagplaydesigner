@@ -1,0 +1,13 @@
+To Do Features:
+- Mirroring of custom routes
+- Warning message when overwriting existing play
+- Delete play button in playbook
+- MOBILE VIEW
+- Saving of custom routes to Firebase
+
+To Do UI:
+- Change UI of Loading plays
+
+To Do bug fixes:
+- Selected player border not red when moving player
+- Stay on the selected player when switching formation
