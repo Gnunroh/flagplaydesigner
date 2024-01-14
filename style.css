@@ -238,6 +238,21 @@ h1 {
     margin-top: 1em;
 }
 
+#showPW {
+    margin-right: .5em;
+}
+
+#showPWsu {
+    margin-right: .5em;
+}
+
+#showPWcontainer {
+    display: flex;
+    font-size: small;
+    flex-direction: row;
+    margin-top: .5em;
+}
+
 .buttoncontainer {
     padding: 5px;
     margin: 0;
